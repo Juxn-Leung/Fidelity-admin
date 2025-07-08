@@ -56,16 +56,6 @@ export const formatEnums = (
   return items.map((item: any) => item[label]).join(', ')
 }
 
-export const formatProperty = (money: number, currency: string) => {
-  if (money && currency) {
-    return `${money} ${currency}`
-  } else if (money && !currency) {
-    return `${money}`
-  } else {
-    return ''
-  }
-}
-
 export const formatFileSize = (bytes: number) => {
   return filesize(bytes)
 }

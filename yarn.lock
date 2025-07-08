@@ -1987,7 +1987,7 @@
 
 "@types/cleave.js@^1.4.12":
   version "1.4.12"
-  resolved "https://registry.yarnpkg.com/@types/cleave.js/-/cleave.js-1.4.12.tgz#21647fbeed857060d9baa2c7d5dc98b877f729d2"
+  resolved "https://packages.aliyun.com/6173d1454024c8d3ec69e513/npm/npm-registry/@types/cleave.js/-/cleave.js-1.4.12.tgz#21647fbeed857060d9baa2c7d5dc98b877f729d2"
   integrity sha512-d+TDoy5wsWfG/lTLNV4CCziGzJovbX5RCrYzrfG2iB5F6yvrzeTtGEgoXW3/7oRj0H6gAzLxuvwmgNEx4Og4QA==
   dependencies:
     "@types/react" "*"
@@ -2532,7 +2532,7 @@ clear-module@^4.1.2:
 
 cleave.js@^1.6.0:
   version "1.6.0"
-  resolved "https://registry.yarnpkg.com/cleave.js/-/cleave.js-1.6.0.tgz#0e4e011943bdd70c67c9dcf4ff800ce710529171"
+  resolved "https://packages.aliyun.com/6173d1454024c8d3ec69e513/npm/npm-registry/cleave.js/-/cleave.js-1.6.0.tgz#0e4e011943bdd70c67c9dcf4ff800ce710529171"
   integrity sha512-ivqesy3j5hQVG3gywPfwKPbi/7ZSftY/UNp5uphnqjr25yI2CP8FS2ODQPzuLXXnNLi29e2+PgPkkiKUXLs/Nw==
 
 cliui@^5.0.0:
@@ -3102,11 +3102,6 @@ file-entry-cache@^9.1.0:
   integrity sha512-/pqPFG+FdxWQj+/WSuzXSDaNzxgTLr/OrR1QuqfEZzDakpdYE70PwUxL7BPUa8hpjbvY1+qvCl8k+8Tq34xJgg==
   dependencies:
     flat-cache "^5.0.0"
-
-file-viewer@^0.1.0:
-  version "1.2.0"
-  resolved "https://registry.yarnpkg.com/file-viewer/-/file-viewer-1.2.0.tgz#5d3f80127afd9148885eb49b9a51c85fff2c95d6"
-  integrity sha512-Fst8qoay+qZVv0K9VPh+QGHyv8r32IM1OxRlempzjZDoembuqNQTycnCSOiaPIjHW53wE/XzAEIfD5BdY9OwpQ==
 
 filesize@^10.1.6:
   version "10.1.6"
@@ -3928,11 +3923,6 @@ prettier@^3.4.2:
   version "3.6.2"
   resolved "https://registry.yarnpkg.com/prettier/-/prettier-3.6.2.tgz#ccda02a1003ebbb2bfda6f83a074978f608b9393"
   integrity sha512-I7AIg5boAr5R0FFtJ6rCfD+LFsWHp81dolrFD8S79U9tb8Az2nGrJncnMSnys+bpQJfRUzqs9hnA81OAA3hCuQ==
-
-print-js@^1.6.0:
-  version "1.6.0"
-  resolved "https://registry.yarnpkg.com/print-js/-/print-js-1.6.0.tgz#692b046cf31992b46afa6c6d8a9db1c69d431d1f"
-  integrity sha512-BfnOIzSKbqGRtO4o0rnj/K3681BSd2QUrsIZy/+WdCIugjIswjmx3lDEZpXB2ruGf9d4b3YNINri81+J0FsBWg==
 
 proxy-from-env@^1.1.0:
   version "1.1.0"
