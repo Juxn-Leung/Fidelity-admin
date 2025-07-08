@@ -4,6 +4,7 @@ import { useEffect } from 'react'
 import useMessage from '@/components/MessageContent/useMessage'
 import useSpin from '@/components/SpinContent/useSpin'
 import ConfigureSystemHardwareAPI from '@/apis/ConfigureSystemHardwareAPI'
+import TextArea from 'antd/es/input/TextArea'
 
 function EquipmentForm({
   editId,
@@ -20,8 +21,9 @@ function EquipmentForm({
       const data = await ConfigureSystemHardwareAPI.getById(id)
       if (formProps?.form) {
         formProps.form.setFieldsValue({
-          ip: data.ip,
           name: data.name,
+          phone: data.phone,
+          remark: data.remark,
         })
       }
     } catch (error) {
@@ -41,13 +43,36 @@ function EquipmentForm({
     <Form layout="vertical" {...formProps}>
       <Row gutter={24}>
         <Col span={24}>
-          <Form.Item name="ip" label="IP地址" rules={[{ required: true }]}>
-            <Input allowClear showCount maxLength={100} placeholder="請輸入" />
+          <Form.Item name="name" label="用户名" rules={[{ required: true }]}>
+            <Input allowClear showCount maxLength={50} placeholder="請輸入" />
           </Form.Item>
         </Col>
         <Col span={24}>
-          <Form.Item name="name" label="名稱" rules={[{ required: true }]}>
-            <Input allowClear showCount maxLength={100} placeholder="請輸入" />
+          <Form.Item
+            name="phone"
+            label="手机号"
+            rules={[
+              { required: true, message: '请输入手机号' },
+              {
+                pattern: /^1[3-9]\d{9}$/,
+                message: '请输入有效的手机号',
+              },
+            ]}
+            >
+            <Input allowClear showCount maxLength={11} placeholder="请输入" />
+          </Form.Item>
+        </Col>
+        <Col span={24}>
+          <Form.Item
+            name="remark"
+            label="备注"
+          >
+            <TextArea
+              showCount
+              maxLength={100}
+              placeholder="请输入"
+              style={{ height: 120, resize: 'none' }}
+            />
           </Form.Item>
         </Col>
       </Row>

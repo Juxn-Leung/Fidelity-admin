@@ -5,7 +5,7 @@ import ErrorBoundary from '@/components/ErrorBoundary'
 import PageNotFoundPage from '@/pages/Error/PageNotFound'
 import HomePage from '@/pages/Home/Home'
 
-import EquipmentPage from '@/pages/EquipmentManagement/EquipmentList'
+import UserPage from '@/pages/UserManagement/UserList'
 
 
 const router = createHashRouter([
@@ -27,8 +27,8 @@ const router = createHashRouter([
         element: <HomePage />,
       },
       {
-        path: '/equipments',
-        element: <EquipmentPage />,
+        path: '/user',
+        element: <UserPage />,
       },
     ],
   },
