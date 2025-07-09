@@ -2,6 +2,7 @@ import React from 'react'
 import { Table } from 'antd'
 import type { TablePaginationConfig, TableProps } from 'antd'
 import { RightOutlined, DownOutlined } from '@ant-design/icons'
+import './DataTable.scss'
 
 const DataTable: React.FC<TableProps> = (props) => {
   const customPagination: TablePaginationConfig = {

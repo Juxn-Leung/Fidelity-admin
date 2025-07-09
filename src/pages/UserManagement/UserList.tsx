@@ -8,7 +8,7 @@ import {
   Form,
   Modal,
   Space,
-  Tabs,
+  Segmented,
 } from 'antd'
 import AppBreadcrumb from '@/components/AppBreadcrumb/AppBreadcrumb'
 import DataTable from '@/components/DataTable'
@@ -44,11 +44,11 @@ const UserList: React.FC = () => {
   const tabList = [
     {
       label: '全部',
-      key: 'ALL',
+      value: 'ALL',
     },
     {
       label: '待审核',
-      key: 'POINTS',
+      value: 'POINTS',
     },
   ]
 
@@ -279,13 +279,10 @@ const UserList: React.FC = () => {
         </DataTableFilter>
 
         <Space>
-          <Tabs
-            type="card"
-            className="h-full"
-            tabBarStyle={{
-              marginBottom: 0,
-            }}
-            items={tabList}
+          <Segmented<string>
+            options={tabList}
+            size="large"
+            className='mb-2'
             onChange={(value) => {
               setTabKey(value)
             }}
