@@ -35,8 +35,8 @@ const UserList: React.FC = () => {
   const [addForm] = Form.useForm()
   const editModal = useAntdEditModal({
     title: {
-      add: '新增用户',
-      edit: '編輯用户',
+      add: '新增背景图',
+      edit: '編輯背景图',
     },
   })
 
@@ -45,11 +45,11 @@ const UserList: React.FC = () => {
   const columns: TableColumnsType<any> = [
     {
       title: '图片',
-      dataIndex: 'url',
+      dataIndex: 'image',
       render: (text: any) => (
         <img
           src={text}
-          style={{ width: 108, height: 192 }}
+          style={{ width: 108, height: 192, objectFit: 'cover' }}
         />
       ),
     },
@@ -82,7 +82,9 @@ const UserList: React.FC = () => {
       width: 180,
       render: (_, record) => (
         <Space>
-          <Button type="link" onClick={() => editModal.open(record.id)}>
+          <Button type="link" onClick={() => {
+            editModal.open(record.id)
+          }}>
             修改
           </Button>
           <DeleteConfirm
@@ -112,7 +114,7 @@ const UserList: React.FC = () => {
         {
           id: '1',
           name: '用户1',
-          url: 'https://via.placeholder.com/108x192',
+          image: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png',
           status: '启用',
           remark: '这是一个备注',
           modifiedBy: '管理员',
@@ -121,7 +123,7 @@ const UserList: React.FC = () => {
         {
           id: '2',
           name: '用户2',
-          url: 'https://via.placeholder.com/108x192',
+          image: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png',
           status: '禁用',
           remark: '这是另一个备注',
           modifiedBy: '管理员',

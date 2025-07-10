@@ -6,7 +6,7 @@ import useSpin from '@/components/SpinContent/useSpin'
 import ConfigureSystemHardwareAPI from '@/apis/ConfigureSystemHardwareAPI'
 import TextArea from 'antd/es/input/TextArea'
 
-function EquipmentForm({
+function UserForm({
   editId,
   ...formProps
 }: FormProps & {
@@ -79,4 +79,4 @@ function EquipmentForm({
     </Form>
   )
 }
-export default EquipmentForm
+export default UserForm
