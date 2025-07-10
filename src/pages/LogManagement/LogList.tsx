@@ -1,14 +1,12 @@
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import {
   Card,
   TableColumnsType,
-  Input,
   Button,
   Select,
   Form,
-  Modal,
   Space,
-  Segmented,
+  DatePicker,
 } from 'antd'
 import AppBreadcrumb from '@/components/AppBreadcrumb/AppBreadcrumb'
 import DataTable from '@/components/DataTable'
@@ -17,7 +15,6 @@ import useSpin from '@/components/SpinContent/useSpin'
 import { getListQuery } from '@/utils'
 import DataTableFilter from '@/components/DataTableFilter'
 import DataTableFilterItem from '@/components/DataTableFilter/DataTableFilterItem'
-import UserForm from './UserForm'
 import {
   GetTableDataFn,
   useAntdDataTable,
@@ -28,6 +25,7 @@ import dayjs from 'dayjs'
 import DeleteConfirm from '@/components/DeleteConfirm'
 import ConfigureSystemHardwareAPI from '@/apis/ConfigureSystemHardwareAPI'
 import { useStatusHelpers } from '@/enums/statusEnum'
+const { RangePicker } = DatePicker
 
 const UserList: React.FC = () => {
   const { msg } = useMessage()
@@ -41,29 +39,22 @@ const UserList: React.FC = () => {
     },
   })
 
-  const tabList = [
-    {
-      label: '全部',
-      value: 'ALL',
-    },
-    {
-      label: '待审核',
-      value: 'POINTS',
-    },
-  ]
-
-  const [tabKey, setTabKey] = useState('ALL')
-
   const { statusEnumOptions } = useStatusHelpers()
 
   const columns: TableColumnsType<any> = [
     {
-      title: '用户名',
-      dataIndex: 'name',
+      title: '开始日期',
+      dataIndex: 'startDate',
+      render: (text: any) => text && dayjs(text).format('YYYY-MM-DD HH:mm:ss'),
     },
     {
-      title: '手机号',
-      dataIndex: 'phone',
+      title: '结束日期',
+      dataIndex: 'endDate',
+      render: (text: any) => text && dayjs(text).format('YYYY-MM-DD HH:mm:ss'),
+    },
+    {
+      title: '操作',
+      dataIndex: 'operation',
     },
     {
       title: '状态',
@@ -87,22 +78,12 @@ const UserList: React.FC = () => {
       key: 'operation',
       align: 'center',
       fixed: 'right',
-      width: 260,
+      width: 180,
       render: (_, record) => (
         <Space>
           <Button type="link" onClick={() => editModal.open(record.id)}>
             修改
           </Button>
-          <DeleteConfirm
-            title="确认审批该数据？"
-            onConfirm={() => {
-              handleApproval(record.id)
-            }}
-          >
-            <Button type="link" style={{ color: '#e9b745' }}>
-              审批
-            </Button> 
-          </DeleteConfirm>
           <DeleteConfirm
             title="确认失效该数据？"
             onConfirm={() => {
@@ -129,21 +110,23 @@ const UserList: React.FC = () => {
       const content = [
         {
           id: '1',
-          name: '张三',
-          phone: '13800000000',
-          status: '启用',
-          remark: '用户',
-          modifiedBy: '管理员',
+          startDate: '2023-01-01 00:00:00',
+          endDate: '2023-12-31 23:59:59',
+          operation: '操作内容',
+          status: 'active',
+          remark: '备注信息',
+          modifiedBy: 'admin',
           modifiedTime: '2023-10-01 12:00:00',
         },
         {
           id: '2',
-          name: '李四',
-          phone: '13900000000',
-          status: '禁用',
-          remark: '员工',
-          modifiedBy: '管理员',
-          modifiedTime: '2023-10-02 12:00:00',
+          startDate: '2023-02-01 00:00:00',
+          endDate: '2023-11-30 23:59:59',
+          operation: '操作内容2',
+          status: 'inactive',
+          remark: '备注信息2',
+          modifiedBy: 'user1',
+          modifiedTime: '2023-10-02 14:30:00',
         },
       ]
       const totalElements = content.length
@@ -171,32 +154,6 @@ const UserList: React.FC = () => {
   const { selectedRowKeys, rowSelection, noneSelected, clearAll } =
     useAntdDataTableSelections(data?.list || [])
 
-  const [confirmLoading, setConfirmLoading] = useState(false);
-  const handleSubmit = async (data: any) => {
-    setConfirmLoading(true)
-    try {
-      if (editModal.editId) {
-        await ConfigureSystemHardwareAPI.update(editModal.editId, {
-          ...data,
-          type: 'QUICK_SCAN',
-        })
-      } else {
-        await ConfigureSystemHardwareAPI.save({
-          ...data,
-          type: 'QUICK_SCAN',
-        })
-      }
-      msg.success('操作成功')
-      refresh()
-      editModal.close()
-    } catch (error) {
-      msg.$error(error)
-    } finally {
-      addForm.resetFields()
-      setConfirmLoading(false)
-    }
-  }
-
   const handleBatchDelete = async () => {
     try {
       toggleSpin(true)
@@ -223,14 +180,12 @@ const UserList: React.FC = () => {
     }
   }
 
-  const handleApproval = async (id: string) => {
-    console.log('审批操作', id)
+  const deleteDate = (e: any, formItem: string) => {
+    const { key } = e
+    if (['Backspace', 'Delete'].includes(key)) {
+      form.setFieldValue(formItem, null)
+    }
   }
-
-  useEffect(() => {
-    refresh()
-    clearAll()
-  }, [tabKey])
 
   return (
     <div className="page-content">
@@ -262,11 +217,17 @@ const UserList: React.FC = () => {
         className="page-card"
       >
         <DataTableFilter form={form} onReset={reset} onSubmit={submit}>
-          <DataTableFilterItem label="用户名" name="name">
-            <Input placeholder="请输入" allowClear={true} />
+          <DataTableFilterItem label="开始日期" name="startDate">
+            <RangePicker
+              className="w-full"
+              onKeyDown={(e) => deleteDate(e, 'startDate')}
+            />
           </DataTableFilterItem>
-          <DataTableFilterItem label="手机号" name="phone">
-            <Input placeholder="请输入" allowClear={true} />
+          <DataTableFilterItem label="结束日期" name="endDate">
+            <RangePicker
+              className="w-full"
+              onKeyDown={(e) => deleteDate(e, 'endDate')}
+            />
           </DataTableFilterItem>
           <DataTableFilterItem label="状态" name="status">
             <Select
@@ -278,41 +239,12 @@ const UserList: React.FC = () => {
           </DataTableFilterItem>
         </DataTableFilter>
 
-        <Space>
-          <Segmented<string>
-            options={tabList}
-            size="large"
-            className='mb-2'
-            onChange={(value) => {
-              setTabKey(value)
-            }}
-          />
-        </Space>
-
         <DataTable
           columns={columns}
           rowSelection={rowSelection}
           {...tableProps}
         />
       </Card>
-
-      <Modal
-        {...editModal.modalProps}
-        width={400}
-        maskClosable={false}
-        confirmLoading={confirmLoading}
-        onOk={() => addForm.submit()}
-        onCancel={() => {
-          addForm.resetFields()
-          editModal.close()
-        }}
-      >
-        <UserForm
-          editId={editModal.editId}
-          form={addForm}
-          onFinish={handleSubmit}
-        />
-      </Modal>
     </div>
   )
 }

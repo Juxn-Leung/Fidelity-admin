@@ -6,6 +6,8 @@ import PageNotFoundPage from '@/pages/Error/PageNotFound'
 import HomePage from '@/pages/Home/Home'
 
 import UserPage from '@/pages/UserManagement/UserList'
+import BackgroundPage from '@/pages/BackgroundManagement/BackgroundList'
+import LogPage from '@/pages/LogManagement/LogList'
 
 
 const router = createHashRouter([
@@ -29,6 +31,14 @@ const router = createHashRouter([
       {
         path: '/user',
         element: <UserPage />,
+      },
+      {
+        path: '/background',
+        element: <BackgroundPage />,
+      },
+      {
+        path: '/log',
+        element: <LogPage />,
       },
     ],
   },
