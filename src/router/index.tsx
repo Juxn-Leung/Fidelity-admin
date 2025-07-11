@@ -8,6 +8,8 @@ import HomePage from '@/pages/Home/Home'
 import UserPage from '@/pages/UserManagement/UserList'
 import BackgroundPage from '@/pages/BackgroundManagement/BackgroundList'
 import LogPage from '@/pages/LogManagement/LogList'
+import StylePage from '@/pages/StyleManagement/StyleList'
+import StyleDetailPage from '@/pages/StyleManagement/StyleDetail'
 
 
 const router = createHashRouter([
@@ -39,6 +41,19 @@ const router = createHashRouter([
       {
         path: '/log',
         element: <LogPage />,
+      },
+      {
+        path: '/style',
+        children: [
+          {
+            path: '',
+            element: <StylePage />,
+          },
+          {
+            path: ':id',
+            element: <StyleDetailPage />,
+          },
+        ],
       },
     ],
   },
