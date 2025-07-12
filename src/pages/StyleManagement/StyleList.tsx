@@ -8,6 +8,7 @@ import {
   Form,
   Space,
 } from 'antd'
+import { useNavigate } from 'react-router'
 import AppBreadcrumb from '@/components/AppBreadcrumb/AppBreadcrumb'
 import DataTable from '@/components/DataTable'
 import useMessage from '@/components/MessageContent/useMessage'
@@ -20,7 +21,6 @@ import {
   useAntdDataTable,
   useAntdDataTableSelections,
 } from '@/hooks/dataTable'
-import { useAntdEditModal } from '@/hooks/form'
 import dayjs from 'dayjs'
 import DeleteConfirm from '@/components/DeleteConfirm'
 import ConfigureSystemHardwareAPI from '@/apis/ConfigureSystemHardwareAPI'
@@ -29,14 +29,7 @@ import { useStatusHelpers } from '@/enums/statusEnum'
 const UserList: React.FC = () => {
   const { msg } = useMessage()
   const { toggleSpin } = useSpin()
-
-  const [addForm] = Form.useForm()
-  const editModal = useAntdEditModal({
-    title: {
-      add: '新增背景图',
-      edit: '編輯背景图',
-    },
-  })
+  const navigate = useNavigate()
 
   const { statusEnumOptions } = useStatusHelpers()
 
@@ -48,10 +41,6 @@ const UserList: React.FC = () => {
     {
       title: '状态',
       dataIndex: 'status',
-    },
-    {
-      title: '备注',
-      dataIndex: 'remark',
     },
     {
       title: '最后修改人',
@@ -70,8 +59,8 @@ const UserList: React.FC = () => {
       width: 180,
       render: (_, record) => (
         <Space>
-          <Button type="link" onClick={() => {
-            editModal.open(record.id)
+          <Button color="primary" variant="outlined" onClick={() => {
+            navigate(`/style/${record?.id}`)
           }}>
             修改
           </Button>
@@ -81,7 +70,7 @@ const UserList: React.FC = () => {
               handleDelete([record.id])
             }}
           >
-            <Button type="link" danger>
+            <Button variant="outlined" danger>
               失效
             </Button> 
           </DeleteConfirm>
@@ -101,19 +90,15 @@ const UserList: React.FC = () => {
       const content = [
         {
           id: '1',
-          name: '用户1',
-          image: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png',
+          name: '欢迎款式',          
           status: '启用',
-          remark: '这是一个备注',
           modifiedBy: '管理员',
           modifiedTime: new Date().toISOString(),
         },
         {
           id: '2',
-          name: '用户2',
-          image: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png',
+          name: '求婚款式',
           status: '禁用',
-          remark: '这是另一个备注',
           modifiedBy: '管理员',
           modifiedTime: new Date().toISOString(),
         },
@@ -186,11 +171,10 @@ const UserList: React.FC = () => {
           <Button
             type="primary"
             onClick={() => {
-              addForm.resetFields()
-              editModal.open(null)
+              
             }}
           >
-            新增背景图
+            新增款式
           </Button>
         </Space>
       </AppBreadcrumb>

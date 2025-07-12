@@ -82,7 +82,7 @@ const UserList: React.FC = () => {
       width: 180,
       render: (_, record) => (
         <Space>
-          <Button type="link" onClick={() => {
+          <Button color="primary" variant="outlined" onClick={() => {
             editModal.open(record.id)
           }}>
             修改
@@ -93,7 +93,7 @@ const UserList: React.FC = () => {
               handleDelete([record.id])
             }}
           >
-            <Button type="link" danger>
+            <Button variant="outlined" danger>
               失效
             </Button> 
           </DeleteConfirm>

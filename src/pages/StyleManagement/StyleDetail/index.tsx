@@ -10,6 +10,17 @@ const fetchDetail = async (id?: string) => {
   // const allotInfo = await UniversalReceivingDistributionAPI.getById(id)
   return {
     // allotInfo,
+    styleInfo: {
+      id: '123',
+      name: 'Sample Style',
+      status: 'active',
+      remark: 'This is a sample style remark.',
+      background: 'https://example.com/background.jpg',
+      music: '',
+      content: '',
+      modifiedBy: 'admin',
+      modifiedTime: '2023-10-01T12:00:00Z',
+    }
   }
 }
 const AllotDetail: React.FC = withDetailProvider(
@@ -24,7 +35,7 @@ const AllotDetail: React.FC = withDetailProvider(
     )
   },
   fetchDetail,
-  'allotId'
+  'id'
 )
 
 export default AllotDetail

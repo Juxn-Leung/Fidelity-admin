@@ -27,6 +27,9 @@ import dayjs from 'dayjs'
 import DeleteConfirm from '@/components/DeleteConfirm'
 import ConfigureSystemHardwareAPI from '@/apis/ConfigureSystemHardwareAPI'
 import { useStatusHelpers } from '@/enums/statusEnum'
+import JIM_w from '@/assets/images/JIM_w.jpg'
+import SILVER_w from '@/assets/images/SILVER_w.jpg'
+import WHITE_w from '@/assets/images/WHITE_w.jpg'
 
 const UserList: React.FC = () => {
   const { msg } = useMessage()
@@ -82,7 +85,7 @@ const UserList: React.FC = () => {
       width: 180,
       render: (_, record) => (
         <Space>
-          <Button type="link" onClick={() => {
+          <Button color="primary" variant="outlined" onClick={() => {
             editModal.open(record.id)
           }}>
             修改
@@ -93,7 +96,7 @@ const UserList: React.FC = () => {
               handleDelete([record.id])
             }}
           >
-            <Button type="link" danger>
+            <Button variant="outlined" danger>
               失效
             </Button> 
           </DeleteConfirm>
@@ -114,7 +117,7 @@ const UserList: React.FC = () => {
         {
           id: '1',
           name: '用户1',
-          image: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png',
+          image: JIM_w,
           status: '启用',
           remark: '这是一个备注',
           modifiedBy: '管理员',
@@ -123,9 +126,18 @@ const UserList: React.FC = () => {
         {
           id: '2',
           name: '用户2',
-          image: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png',
+          image: SILVER_w,
           status: '禁用',
           remark: '这是另一个备注',
+          modifiedBy: '管理员',
+          modifiedTime: new Date().toISOString(),
+        },
+        {
+          id: '3',
+          name: '用户3',
+          image: WHITE_w,
+          status: '启用',
+          remark: '这是一个备注',
           modifiedBy: '管理员',
           modifiedTime: new Date().toISOString(),
         },

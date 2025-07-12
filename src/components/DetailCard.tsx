@@ -15,8 +15,8 @@ const DetailCard = (props: any) => {
         'h-auto': !isUnwind,
       })}
       style={{
-        borderColor: '#c4e4ce',
-        background: '#f0fffa',
+        borderColor: '#F8E49D',
+        background: '#FEFBF0',
       }}
       onChange={(val) => {
         if (val.length) {
@@ -37,7 +37,7 @@ const DetailCard = (props: any) => {
         }}
         styles={{
           header: {
-            color: '#13A07B',
+            color: '#23221E',
           },
         }}
       >

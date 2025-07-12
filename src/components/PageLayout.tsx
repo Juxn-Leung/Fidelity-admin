@@ -16,10 +16,10 @@ const PageLayout = ({
       style={{ height: 'calc(100vh - 60px - 72px)', ...style }}
     >
       <Row gutter={12} className="h-full overflow-hidden">
-        <Col span={right ? 17 : 24} className="h-full overflow-y-auto">
+        <Col span={right ? 12 : 24} className="h-full overflow-y-auto">
           {left}
         </Col>
-        <Col span={right ? 7 : 0} className="h-full overflow-y-auto">
+        <Col span={right ? 12 : 0} className="h-full overflow-y-auto">
           {right}
         </Col>
       </Row>

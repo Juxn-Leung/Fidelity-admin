@@ -18,7 +18,12 @@ function UserForm({
   const getInfo = async (id: string) => {
     toggleSpin(true)
     try {
-      const data = await ConfigureSystemHardwareAPI.getById(id)
+      // const data = await ConfigureSystemHardwareAPI.getById(id)
+      const data = {
+        name: '张三',
+        phone: '13800138000',
+        remark: '这是一个备注信息',
+      }
       if (formProps?.form) {
         formProps.form.setFieldsValue({
           name: data.name,

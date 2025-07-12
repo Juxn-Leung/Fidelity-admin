@@ -90,7 +90,7 @@ const UserList: React.FC = () => {
       width: 260,
       render: (_, record) => (
         <Space>
-          <Button type="link" onClick={() => editModal.open(record.id)}>
+          <Button color='primary' variant="outlined" onClick={() => editModal.open(record.id)}>
             修改
           </Button>
           <DeleteConfirm
@@ -99,7 +99,7 @@ const UserList: React.FC = () => {
               handleApproval(record.id)
             }}
           >
-            <Button type="link" style={{ color: '#e9b745' }}>
+            <Button variant="outlined" style={{ color: '#13A07B', borderColor: '#13A07B' }}>
               审批
             </Button> 
           </DeleteConfirm>
@@ -109,7 +109,7 @@ const UserList: React.FC = () => {
               handleDelete([record.id])
             }}
           >
-            <Button type="link" danger>
+            <Button variant="outlined" danger>
               失效
             </Button> 
           </DeleteConfirm>

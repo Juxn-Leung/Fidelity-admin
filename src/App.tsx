@@ -11,19 +11,19 @@ import { Suspense } from 'react'
 const theme: ThemeConfig = {
   token: {
     // 修改主題色
-    colorPrimary: '#13A07B',
+    colorPrimary: '#DEC37A',
   },
   components: {
     Layout: {
-      headerBg: '#13A07B',
+      headerBg: '#DEC37A',
       bodyBg: '#f8f8f8',
     },
     Input: {
       // 修改表單焦點邊框顔色
-      activeBorderColor: '#13A07B',
+      activeBorderColor: '#DEC37A',
     },
     Breadcrumb: {
-      colorText: '#13A07B',
+      colorText: '#DEC37A',
       linkColor: '#232323',
       itemColor: '#232323',
       separatorColor: '#232323',
@@ -31,9 +31,9 @@ const theme: ThemeConfig = {
       fontSize: 18,
     },
     Button: {
-      colorLink: '#13A07B',
-      colorLinkActive: '#13A07B',
-      colorLinkHover: '#13A07B',
+      colorLink: '#DEC37A',
+      colorLinkActive: '#DEC37A',
+      colorLinkHover: '#DEC37A',
     },
     Descriptions: {
       labelBg: '#EEF3FA',
@@ -41,10 +41,14 @@ const theme: ThemeConfig = {
       borderRadiusLG: 0,
     },
     List: {
-      // headerBg: '#13A07B',
+      // headerBg: '#DEC37A',
     },
     Tabs: {
       cardBg: '#fff',
+    },
+    Segmented: {
+      itemSelectedBg: '#F8E49D',
+      itemSelectedColor: '#23221E'
     },
   },
 }
