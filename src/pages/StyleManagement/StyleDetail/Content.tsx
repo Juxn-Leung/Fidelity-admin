@@ -229,9 +229,14 @@ const Content = () => {
                     top: '50%',
                     transform: 'translateY(-50%)',
                     left: '0',
-                    fontSize: '16px',
+                    position: 'absolute',
                   }}
-                >{content}</Marquee>
+                >
+                  <p style={{
+                    fontSize: '36px',
+                    color: '#333',
+                  }}>{content}</p>
+                </Marquee>
               )}
             </div>
           </DetailCard>

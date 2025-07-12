@@ -133,14 +133,16 @@ function BackgroundForm({
                   <Button danger onClick={handleDelete}>删除</Button>
                 </Space>
               ) : (
-                <button
-                  style={{ border: 0, background: 'none' }}
-                  type="button"
-                  onClick={handleUpload}
-                >
-                  <PlusOutlined />
-                  <div style={{ marginTop: 8 }}>上传图片</div>
-                </button>
+                <div style={{ textAlign: 'center', padding: 20, borderRadius: 8, border: '1px dashed #d9d9d9'  }}>
+                  <button
+                    style={{ border: 0, background: 'none' }}
+                    type="button"
+                    onClick={handleUpload}
+                  >
+                    <PlusOutlined />
+                    <div style={{ marginTop: 8 }}>上传图片</div>
+                  </button>
+                </div>
               )}
             </Form.Item>
           </Col>

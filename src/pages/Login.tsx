@@ -9,7 +9,6 @@ const PhoneVerification = () => {
   const { msg } = useMessage()
   const { toggleSpin } = useSpin()
 
-
   const onSubmit = async () => {
     toggleSpin(true)
     try {
@@ -32,22 +31,35 @@ const PhoneVerification = () => {
   const password = Form.useWatch('password', form)
 
   return (
-    <>
-      <div style={{ maxWidth: 500, margin: '200px auto' }}>
+    <div
+      style={{
+        backgroundColor: '#FEFAEF',
+        height: '100vh',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+      }}
+    >
+      <div
+        style={{
+          width: 500,
+          margin: '200px auto',
+        }}
+      >
         <Typography.Title style={{ textAlign: 'center' }} level={2}>
           欢迎登录管理系统
         </Typography.Title>
         <Divider></Divider>
-        <Form labelCol={{ span: 8 }} form={form} onFinish={onSubmit}>
-          <Form.Item 
-            name={'username'} 
+        <Form labelCol={{ span: 6 }} form={form} onFinish={onSubmit}>
+          <Form.Item
+            name={'username'}
             label="账号"
             rules={[{ required: true, message: '请输入账号' }]}
           >
             <Input></Input>
           </Form.Item>
-          <Form.Item 
-            name={'password'} 
+          <Form.Item
+            name={'password'}
             label="密码"
             rules={[{ required: true, message: '请输入密码' }]}
           >
@@ -55,6 +67,7 @@ const PhoneVerification = () => {
           </Form.Item>
           <Form.Item label={null}>
             <Button
+              className='w-full'
               type="primary"
               htmlType="submit"
               disabled={!username || !password}
@@ -64,7 +77,7 @@ const PhoneVerification = () => {
           </Form.Item>
         </Form>
       </div>
-    </>
+    </div>
   )
 }
 export default PhoneVerification
