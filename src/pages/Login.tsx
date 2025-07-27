@@ -2,6 +2,7 @@ import useMessage from '@/components/MessageContent/useMessage'
 import useSpin from '@/components/SpinContent/useSpin'
 import { Button, Divider, Form, Input, Typography } from 'antd'
 import { useNavigate } from 'react-router'
+import LoginAPI from '@/apis/LoginAPI'
 
 const PhoneVerification = () => {
   const navigate = useNavigate()
@@ -13,12 +14,14 @@ const PhoneVerification = () => {
     toggleSpin(true)
     try {
       const values = form.getFieldsValue()
-      // 模拟登录请求
-      if (values.username === 'admin' && values.password === '123456') {
+      const data = await LoginAPI.login(values)
+      if (data.flag) {
+        const { token } = data.data
+        localStorage.setItem('token', token)
         msg.success('登录成功')
         navigate('/home')
       } else {
-        msg.$error('账号或密码错误')
+        msg.error(data.msg)
       }
     } catch (error) {
       msg.$error(error)
@@ -27,7 +30,7 @@ const PhoneVerification = () => {
     }
   }
 
-  const username = Form.useWatch('username', form)
+  const account = Form.useWatch('account', form)
   const password = Form.useWatch('password', form)
 
   return (
@@ -52,7 +55,7 @@ const PhoneVerification = () => {
         <Divider></Divider>
         <Form labelCol={{ span: 6 }} form={form} onFinish={onSubmit}>
           <Form.Item
-            name={'username'}
+            name={'account'}
             label="账号"
             rules={[{ required: true, message: '请输入账号' }]}
           >
@@ -70,7 +73,7 @@ const PhoneVerification = () => {
               className='w-full'
               type="primary"
               htmlType="submit"
-              disabled={!username || !password}
+              disabled={!account || !password}
             >
               登入
             </Button>
