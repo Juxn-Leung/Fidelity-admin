@@ -1,4 +1,5 @@
 import axios from 'axios'
+import { logout } from '../helpers/oauth'
 // import { qsStringify } from '@metaarchit/common-utils'
 
 const axiosInstance = axios.create({
@@ -28,7 +29,7 @@ axiosInstance.interceptors.response.use(
   },
   (error) => {
     if (error?.response?.status === 401) {
-      localStorage.setItem('token', '')
+      logout()
     }
     return Promise.reject(error)
   }

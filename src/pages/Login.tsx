@@ -14,15 +14,9 @@ const PhoneVerification = () => {
     toggleSpin(true)
     try {
       const values = form.getFieldsValue()
-      const data = await LoginAPI.login(values)
-      if (data.flag) {
-        const { token } = data.data
-        localStorage.setItem('token', token)
-        msg.success('登录成功')
-        navigate('/home')
-      } else {
-        msg.error(data.msg)
-      }
+      await LoginAPI.login(values)
+      msg.success('登录成功')
+      navigate('/home')
     } catch (error) {
       msg.$error(error)
     } finally {

@@ -28,8 +28,8 @@ export function mapNodesWithDisabledIds(
 }
 
 export const getListQuery: (options: Params[0]) => {
-  page: number
-  size: number
+  pageNo: number
+  pageSize: number
   sort?: string
 } = ({ sorter, pageSize, current }) => {
   const sorters = Array.isArray(sorter) ? sorter : [sorter]
@@ -43,8 +43,8 @@ export const getListQuery: (options: Params[0]) => {
         )
         .filter((ele) => !!ele)
         .join(',') || undefined,
-    page: current - 1 || 0,
-    size: pageSize,
+    pageNo: current || 1,
+    pageSize,
   }
 }
 
