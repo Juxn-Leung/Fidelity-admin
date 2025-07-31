@@ -4,7 +4,6 @@ import {
   TableColumnsType,
   Input,
   Button,
-  Select,
   Form,
   Modal,
   Space,
@@ -54,7 +53,7 @@ const UserList: React.FC = () => {
 
   const [tabKey, setTabKey] = useState('ALL')
 
-  const { userStatusEnumOptions, getUserStatusText } = useUserStatusHelpers()
+  const { getUserStatusText } = useUserStatusHelpers()
 
   const columns: TableColumnsType<any> = [
     {
@@ -72,7 +71,9 @@ const UserList: React.FC = () => {
       title: '状态',
       dataIndex: 'userStatus',
       width: 100,
-      render: (text) => getUserStatusText(text),
+      render: (text) => <span className={
+        text === 0 ? 'text-yellow-500' : text === 1 ? 'text-green-500' : 'text-red-500'
+      }>{getUserStatusText(text)}</span>,
     },
     {
       title: '备注',
@@ -238,14 +239,6 @@ const UserList: React.FC = () => {
           </DataTableFilterItem>
           <DataTableFilterItem label="手机号" name="userPhone">
             <Input placeholder="请输入" allowClear={true} />
-          </DataTableFilterItem>
-          <DataTableFilterItem label="状态" name="userStatus">
-            <Select
-              options={userStatusEnumOptions}
-              className="w-full"
-              placeholder="请选择"
-              allowClear={true}
-            />
           </DataTableFilterItem>
         </DataTableFilter>
 

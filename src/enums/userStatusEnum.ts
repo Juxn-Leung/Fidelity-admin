@@ -9,7 +9,7 @@ export enum UserStatus {
 export const useUserStatusHelpers = () => {
   const userStatusEnumOptions = [
     { value: UserStatus.zero, label: '待审核' },
-    { value: UserStatus.one, label: '已审核' },
+    { value: UserStatus.one, label: '生效' },
     { value: UserStatus.two, label: '失效' },
   ]
   const getUserStatusText = createGetOptionTextFn(userStatusEnumOptions)
