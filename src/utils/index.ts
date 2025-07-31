@@ -27,11 +27,12 @@ export function mapNodesWithDisabledIds(
   return clonedNodes
 }
 
-export const getListQuery: (options: Params[0]) => {
+export const getListQuery: (options?: Params[0]) => {
   pageNo: number
   pageSize: number
   sort?: string
-} = ({ sorter, pageSize, current }) => {
+} = (options) => {
+  const { sorter, pageSize, current } = options || { pageSize: 10, current: 1 }
   const sorters = Array.isArray(sorter) ? sorter : [sorter]
   return {
     sort:
@@ -44,7 +45,7 @@ export const getListQuery: (options: Params[0]) => {
         .filter((ele) => !!ele)
         .join(',') || undefined,
     pageNo: current || 1,
-    pageSize,
+    pageSize: pageSize || 10,
   }
 }
 
