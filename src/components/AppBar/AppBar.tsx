@@ -4,6 +4,7 @@ import { Modal, Tooltip } from 'antd'
 import { LogoutOutlined } from '@ant-design/icons'
 import { useAuth } from '@/contexts/AuthContext'
 import useMessage from '@/components/MessageContent/useMessage'
+import { logout } from '@/helpers/oauth'
 
 const AppBar: React.FC = () => {
   const auth = useAuth()
@@ -18,6 +19,7 @@ const AppBar: React.FC = () => {
       closable: true,
       async onOk() {
         // 退出逻辑
+        logout()
       },
       onCancel() {
         msg.info('操作已取消')

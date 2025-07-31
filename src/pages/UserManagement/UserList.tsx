@@ -26,8 +26,8 @@ import {
 import { useAntdEditModal } from '@/hooks/form'
 import dayjs from 'dayjs'
 import DeleteConfirm from '@/components/DeleteConfirm'
-import ConfigureSystemHardwareAPI from '@/apis/ConfigureSystemHardwareAPI'
-import { useStatusHelpers } from '@/enums/statusEnum'
+import UserOpAPI from '@/apis/UserOpAPI'
+import { useUserStatusHelpers } from '@/enums/userStatusEnum'
 
 const UserList: React.FC = () => {
   const { msg } = useMessage()
@@ -54,33 +54,41 @@ const UserList: React.FC = () => {
 
   const [tabKey, setTabKey] = useState('ALL')
 
-  const { statusEnumOptions } = useStatusHelpers()
+  const { userStatusEnumOptions, getUserStatusText } = useUserStatusHelpers()
 
   const columns: TableColumnsType<any> = [
     {
       title: '用户名',
-      dataIndex: 'name',
+      dataIndex: 'userName',
+      width: 100,
+        
     },
     {
       title: '手机号',
-      dataIndex: 'phone',
+      dataIndex: 'userPhone',
+      width: 200,
     },
     {
       title: '状态',
-      dataIndex: 'status',
+      dataIndex: 'userStatus',
+      width: 100,
+      render: (text) => getUserStatusText(text),
     },
     {
       title: '备注',
       dataIndex: 'remark',
+      width: 160,
     },
     {
       title: '最后修改人',
-      dataIndex: 'modifiedBy',
+      dataIndex: 'userRole',
+      width: 160,
     },
     {
       title: '修改时间',
-      dataIndex: 'modifiedTime',
-      render: (text: any) => text && dayjs(text).format('YYYY-MM-DD HH:mm:ss'),
+      dataIndex: 'updateTime',
+      render: (_, record) => record.updateTime ? dayjs(record.updateTime).format('YYYY-MM-DD HH:mm:ss') : dayjs(record.createTime).format('YYYY-MM-DD HH:mm:ss'),
+      width: 220,
     },
     {
       title: '操作',
@@ -90,13 +98,20 @@ const UserList: React.FC = () => {
       width: 260,
       render: (_, record) => (
         <Space>
-          <Button color='primary' variant="outlined" onClick={() => editModal.open(record.id)}>
+          <Button color='primary' variant="outlined" onClick={() => {
+            addForm.setFieldsValue({
+              userName: record.userName,
+              userPhone: record.userPhone,
+              remark: record.remark,
+            })
+            editModal.open(record.id)
+          }}>
             修改
           </Button>
           <DeleteConfirm
             title="确认审批该数据？"
             onConfirm={() => {
-              handleApproval(record.id)
+              handleChangeStatus(record.id, 1)
             }}
           >
             <Button variant="outlined" style={{ color: '#13A07B', borderColor: '#13A07B' }}>
@@ -106,7 +121,7 @@ const UserList: React.FC = () => {
           <DeleteConfirm
             title="确认失效该数据？"
             onConfirm={() => {
-              handleDelete([record.id])
+              handleChangeStatus(record.id, 2)
             }}
           >
             <Button variant="outlined" danger>
@@ -121,34 +136,15 @@ const UserList: React.FC = () => {
   const getTableData: GetTableDataFn = async (params, formData) => {
     try {
       const listQuery = getListQuery(params)
-      // const { content, totalElements } = await ConfigureSystemHardwareAPI.find({
-      //   ...listQuery,
-      //   ...formData,
-      // })
-      console.log('listQuery', listQuery, formData)
-      const content = [
-        {
-          id: '1',
-          name: '张三',
-          phone: '13800000000',
-          status: '启用',
-          remark: '用户',
-          modifiedBy: '管理员',
-          modifiedTime: '2023-10-01 12:00:00',
-        },
-        {
-          id: '2',
-          name: '李四',
-          phone: '13900000000',
-          status: '禁用',
-          remark: '员工',
-          modifiedBy: '管理员',
-          modifiedTime: '2023-10-02 12:00:00',
-        },
-      ]
-      const totalElements = content.length
+      const { data } = await UserOpAPI.find({
+        ...listQuery,
+        ...formData,
+        userStatus: tabKey === 'ALL' ? undefined : tabKey === 'POINTS' ? 0 : undefined,
+      })
+      console.log('获取用户列表数据', data)
+      const totalElements = data.total
       return {
-        list: content,
+        list: data.records,
         total: totalElements,
       }
     } catch (error) {
@@ -168,7 +164,7 @@ const UserList: React.FC = () => {
   })
   const { reset, submit } = search
 
-  const { selectedRowKeys, rowSelection, noneSelected, clearAll } =
+  const { rowSelection, clearAll } =
     useAntdDataTableSelections(data?.list || [])
 
   const [confirmLoading, setConfirmLoading] = useState(false);
@@ -176,15 +172,12 @@ const UserList: React.FC = () => {
     setConfirmLoading(true)
     try {
       if (editModal.editId) {
-        await ConfigureSystemHardwareAPI.update(editModal.editId, {
+        await UserOpAPI.editUser({
           ...data,
-          type: 'QUICK_SCAN',
+          id: editModal.editId
         })
       } else {
-        await ConfigureSystemHardwareAPI.save({
-          ...data,
-          type: 'QUICK_SCAN',
-        })
+        await UserOpAPI.createUser(data)
       }
       msg.success('操作成功')
       refresh()
@@ -197,10 +190,13 @@ const UserList: React.FC = () => {
     }
   }
 
-  const handleBatchDelete = async () => {
+  const handleChangeStatus = async (id: string, userStatus: number) => {
     try {
       toggleSpin(true)
-      await ConfigureSystemHardwareAPI.batchDelete(selectedRowKeys)
+      await UserOpAPI.userStatusAudit({
+        id,
+        userStatus,
+      })
       refresh()
       msg.success('操作成功')
     } catch (error) {
@@ -208,23 +204,6 @@ const UserList: React.FC = () => {
     } finally {
       toggleSpin(false)
     }
-  }
-
-  const handleDelete = async (ids: string[]) => {
-    try {
-      toggleSpin(true)
-      await ConfigureSystemHardwareAPI.batchDelete(ids)
-      refresh()
-      msg.success('操作成功')
-    } catch (error) {
-      msg.$error(error)
-    } finally {
-      toggleSpin(false)
-    }
-  }
-
-  const handleApproval = async (id: string) => {
-    console.log('审批操作', id)
   }
 
   useEffect(() => {
@@ -238,14 +217,6 @@ const UserList: React.FC = () => {
         breadcrumbList={[{ title: '用户管理' }]}
       >
         <Space>
-          <DeleteConfirm 
-            onConfirm={handleBatchDelete}
-            title="确认失效选中的数据？"
-          >
-            <Button type="primary" disabled={noneSelected} danger>
-              失效
-            </Button>
-          </DeleteConfirm>
           <Button
             type="primary"
             onClick={() => {
@@ -262,15 +233,15 @@ const UserList: React.FC = () => {
         className="page-card"
       >
         <DataTableFilter form={form} onReset={reset} onSubmit={submit}>
-          <DataTableFilterItem label="用户名" name="name">
+          <DataTableFilterItem label="用户名" name="userName">
             <Input placeholder="请输入" allowClear={true} />
           </DataTableFilterItem>
-          <DataTableFilterItem label="手机号" name="phone">
+          <DataTableFilterItem label="手机号" name="userPhone">
             <Input placeholder="请输入" allowClear={true} />
           </DataTableFilterItem>
-          <DataTableFilterItem label="状态" name="status">
+          <DataTableFilterItem label="状态" name="userStatus">
             <Select
-              options={statusEnumOptions}
+              options={userStatusEnumOptions}
               className="w-full"
               placeholder="请选择"
               allowClear={true}
@@ -308,7 +279,6 @@ const UserList: React.FC = () => {
         }}
       >
         <UserForm
-          editId={editModal.editId}
           form={addForm}
           onFinish={handleSubmit}
         />
