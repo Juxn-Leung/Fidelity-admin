@@ -1,5 +1,6 @@
 import dayjs from 'dayjs'
 import { filesize } from 'filesize'
+import { baseUrl } from '@/apis/config'
 
 export interface Item {
   id: string | number | boolean | null
@@ -58,4 +59,11 @@ export const formatEnums = (
 
 export const formatFileSize = (bytes: number) => {
   return filesize(bytes)
+}
+
+export const formatPicUrl = (id: string) => {
+  if (id) {
+    return `${baseUrl}/fidelityApi/api/file/${id}`
+  }
+  return ''
 }

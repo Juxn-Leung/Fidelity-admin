@@ -23,7 +23,7 @@ import {
 } from '@/hooks/dataTable'
 import dayjs from 'dayjs'
 import DeleteConfirm from '@/components/DeleteConfirm'
-import ConfigureSystemHardwareAPI from '@/apis/ConfigureSystemHardwareAPI'
+import PatternAPI from '@/apis/PatternAPI'
 import { useStatusHelpers } from '@/enums/statusEnum'
 
 const UserList: React.FC = () => {
@@ -32,6 +32,22 @@ const UserList: React.FC = () => {
   const navigate = useNavigate()
 
   const { statusEnumOptions } = useStatusHelpers()
+
+  const handleChangeStatus = async (id: string, userStatus: number) => {
+    try {
+      toggleSpin(true)
+      await PatternAPI.picStatusAudit({
+        id,
+        userStatus,
+      })
+      refresh()
+      msg.success('操作成功')
+    } catch (error) {
+      msg.$error(error)
+    } finally {
+      toggleSpin(false)
+    }
+  }
 
   const columns: TableColumnsType<any> = [
     {
@@ -44,19 +60,21 @@ const UserList: React.FC = () => {
     },
     {
       title: '最后修改人',
-      dataIndex: 'modifiedBy',
+      dataIndex: 'userRole',
+      width: 160,
     },
     {
       title: '修改时间',
-      dataIndex: 'modifiedTime',
-      render: (text: any) => text && dayjs(text).format('YYYY-MM-DD HH:mm:ss'),
+      dataIndex: 'updateTime',
+      render: (_, record) => record.updateTime ? dayjs(record.updateTime).format('YYYY-MM-DD HH:mm:ss') : dayjs(record.createTime).format('YYYY-MM-DD HH:mm:ss'),
+      width: 220,
     },
     {
       title: '操作',
       key: 'operation',
       align: 'center',
       fixed: 'right',
-      width: 180,
+      width: 260,
       render: (_, record) => (
         <Space>
           <Button color="primary" variant="outlined" onClick={() => {
@@ -65,9 +83,19 @@ const UserList: React.FC = () => {
             修改
           </Button>
           <DeleteConfirm
+            title="确认生效该数据？"
+            onConfirm={() => {
+              handleChangeStatus(record.id, 1)
+            }}
+          >
+            <Button variant="outlined" style={{ color: '#13A07B', borderColor: '#13A07B' }}>
+              生效
+            </Button> 
+          </DeleteConfirm>
+          <DeleteConfirm
             title="确认失效该数据？"
             onConfirm={() => {
-              handleDelete([record.id])
+              handleChangeStatus(record.id, 2)
             }}
           >
             <Button variant="outlined" danger>
@@ -82,31 +110,13 @@ const UserList: React.FC = () => {
   const getTableData: GetTableDataFn = async (params, formData) => {
     try {
       const listQuery = getListQuery(params)
-      // const { content, totalElements } = await ConfigureSystemHardwareAPI.find({
-      //   ...listQuery,
-      //   ...formData,
-      // })
-      console.log('listQuery', listQuery, formData)
-      const content = [
-        {
-          id: '1',
-          name: '欢迎款式',          
-          status: '启用',
-          modifiedBy: '管理员',
-          modifiedTime: new Date().toISOString(),
-        },
-        {
-          id: '2',
-          name: '求婚款式',
-          status: '禁用',
-          modifiedBy: '管理员',
-          modifiedTime: new Date().toISOString(),
-        },
-      ]
-      const totalElements = content.length
+      const { data } = await PatternAPI.find({
+        ...listQuery,
+        ...formData,
+      })
       return {
-        list: content,
-        total: totalElements,
+        list: data.records,
+        total: data.total
       }
     } catch (error) {
       msg.$error(error)
@@ -125,34 +135,8 @@ const UserList: React.FC = () => {
   })
   const { reset, submit } = search
 
-  const { selectedRowKeys, rowSelection, noneSelected, clearAll } =
+  const { rowSelection, clearAll } =
     useAntdDataTableSelections(data?.list || [])
-
-  const handleBatchDelete = async () => {
-    try {
-      toggleSpin(true)
-      await ConfigureSystemHardwareAPI.batchDelete(selectedRowKeys)
-      refresh()
-      msg.success('操作成功')
-    } catch (error) {
-      msg.$error(error)
-    } finally {
-      toggleSpin(false)
-    }
-  }
-
-  const handleDelete = async (ids: string[]) => {
-    try {
-      toggleSpin(true)
-      await ConfigureSystemHardwareAPI.batchDelete(ids)
-      refresh()
-      msg.success('操作成功')
-    } catch (error) {
-      msg.$error(error)
-    } finally {
-      toggleSpin(false)
-    }
-  }
 
   return (
     <div className="page-content">
@@ -160,18 +144,10 @@ const UserList: React.FC = () => {
         breadcrumbList={[{ title: '背景图管理' }]}
       >
         <Space>
-          <DeleteConfirm 
-            onConfirm={handleBatchDelete}
-            title="确认失效选中的数据？"
-          >
-            <Button type="primary" disabled={noneSelected} danger>
-              失效
-            </Button>
-          </DeleteConfirm>
           <Button
-            type="primary"
+            type="primary"  
             onClick={() => {
-              
+              navigate('/styles')
             }}
           >
             新增款式
@@ -183,10 +159,10 @@ const UserList: React.FC = () => {
         className="page-card"
       >
         <DataTableFilter form={form} onReset={reset} onSubmit={submit}>
-          <DataTableFilterItem label="图片名称" name="name">
+          <DataTableFilterItem label="款式名称" name="patternName">
             <Input placeholder="请输入" allowClear={true} />
           </DataTableFilterItem>
-          <DataTableFilterItem label="状态" name="status">
+          <DataTableFilterItem label="状态" name="patternStatus">
             <Select
               options={statusEnumOptions}
               className="w-full"

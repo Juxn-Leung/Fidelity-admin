@@ -2,16 +2,13 @@ import React from 'react'
 import {
   Card,
   TableColumnsType,
-  Button,
   Select,
   Form,
-  Space,
   DatePicker,
 } from 'antd'
 import AppBreadcrumb from '@/components/AppBreadcrumb/AppBreadcrumb'
 import DataTable from '@/components/DataTable'
 import useMessage from '@/components/MessageContent/useMessage'
-import useSpin from '@/components/SpinContent/useSpin'
 import { getListQuery } from '@/utils'
 import DataTableFilter from '@/components/DataTableFilter'
 import DataTableFilterItem from '@/components/DataTableFilter/DataTableFilterItem'
@@ -20,109 +17,45 @@ import {
   useAntdDataTable,
   useAntdDataTableSelections,
 } from '@/hooks/dataTable'
-import { useAntdEditModal } from '@/hooks/form'
 import dayjs from 'dayjs'
-import DeleteConfirm from '@/components/DeleteConfirm'
-import ConfigureSystemHardwareAPI from '@/apis/ConfigureSystemHardwareAPI'
+import LogAPI from '@/apis/LogAPI'
 import { useStatusHelpers } from '@/enums/statusEnum'
 const { RangePicker } = DatePicker
 
 const UserList: React.FC = () => {
   const { msg } = useMessage()
-  const { toggleSpin } = useSpin()
-
-  const [addForm] = Form.useForm()
-  const editModal = useAntdEditModal({
-    title: {
-      add: '新增用户',
-      edit: '編輯用户',
-    },
-  })
-
   const { statusEnumOptions } = useStatusHelpers()
 
   const columns: TableColumnsType<any> = [
     {
-      title: '开始日期',
-      dataIndex: 'startDate',
+      title: '开始时间',
+      dataIndex: 'createDate',
       render: (text: any) => text && dayjs(text).format('YYYY-MM-DD HH:mm:ss'),
     },
     {
-      title: '结束日期',
-      dataIndex: 'endDate',
-      render: (text: any) => text && dayjs(text).format('YYYY-MM-DD HH:mm:ss'),
+      title: '操作节点',
+      dataIndex: 'apiName',
     },
     {
       title: '操作',
       dataIndex: 'operation',
     },
     {
-      title: '状态',
-      dataIndex: 'status',
-    },
-    {
-      title: '备注',
-      dataIndex: 'remark',
-    },
-    {
-      title: '最后修改人',
-      dataIndex: 'modifiedBy',
-    },
-    {
-      title: '修改时间',
-      dataIndex: 'modifiedTime',
-      render: (text: any) => text && dayjs(text).format('YYYY-MM-DD HH:mm:ss'),
-    },
-    {
-      title: '操作',
-      key: 'operation',
-      align: 'center',
-      fixed: 'right',
-      width: 180,
-      render: (_, record) => (
-        <Space>
-          <Button color='primary' variant="outlined" onClick={() => editModal.open(record.id)}>
-            下载
-          </Button>
-        </Space>
-      ),
+      title: 'ip 地址',
+      dataIndex: 'ip',
     },
   ]
 
   const getTableData: GetTableDataFn = async (params, formData) => {
     try {
       const listQuery = getListQuery(params)
-      // const { content, totalElements } = await ConfigureSystemHardwareAPI.find({
-      //   ...listQuery,
-      //   ...formData,
-      // })
-      console.log('listQuery', listQuery, formData)
-      const content = [
-        {
-          id: '1',
-          startDate: '2023-01-01 00:00:00',
-          endDate: '2023-12-31 23:59:59',
-          operation: '操作内容',
-          status: 'active',
-          remark: '备注信息',
-          modifiedBy: 'admin',
-          modifiedTime: '2023-10-01 12:00:00',
-        },
-        {
-          id: '2',
-          startDate: '2023-02-01 00:00:00',
-          endDate: '2023-11-30 23:59:59',
-          operation: '操作内容2',
-          status: 'inactive',
-          remark: '备注信息2',
-          modifiedBy: 'user1',
-          modifiedTime: '2023-10-02 14:30:00',
-        },
-      ]
-      const totalElements = content.length
+      const { data } = await LogAPI.find({
+        ...listQuery,
+        ...formData,
+      })
       return {
-        list: content,
-        total: totalElements,
+        list: data.records,
+        total: data.total
       }
     } catch (error) {
       msg.$error(error)
@@ -136,39 +69,13 @@ const UserList: React.FC = () => {
   }
 
   const [form] = Form.useForm()
-  const { data, tableProps, search, refresh } = useAntdDataTable(getTableData, {
+  const { data, tableProps, search } = useAntdDataTable(getTableData, {
     form,
   })
   const { reset, submit } = search
 
-  const { selectedRowKeys, rowSelection, noneSelected, clearAll } =
+  const { rowSelection, clearAll } =
     useAntdDataTableSelections(data?.list || [])
-
-  const handleBatchDelete = async () => {
-    try {
-      toggleSpin(true)
-      await ConfigureSystemHardwareAPI.batchDelete(selectedRowKeys)
-      refresh()
-      msg.success('操作成功')
-    } catch (error) {
-      msg.$error(error)
-    } finally {
-      toggleSpin(false)
-    }
-  }
-
-  const handleDelete = async (ids: string[]) => {
-    try {
-      toggleSpin(true)
-      await ConfigureSystemHardwareAPI.batchDelete(ids)
-      refresh()
-      msg.success('操作成功')
-    } catch (error) {
-      msg.$error(error)
-    } finally {
-      toggleSpin(false)
-    }
-  }
 
   const deleteDate = (e: any, formItem: string) => {
     const { key } = e
@@ -182,25 +89,6 @@ const UserList: React.FC = () => {
       <AppBreadcrumb
         breadcrumbList={[{ title: '用户管理' }]}
       >
-        <Space>
-          <DeleteConfirm 
-            onConfirm={handleBatchDelete}
-            title="确认失效选中的数据？"
-          >
-            <Button type="primary" disabled={noneSelected} danger>
-              失效
-            </Button>
-          </DeleteConfirm>
-          <Button
-            type="primary"
-            onClick={() => {
-              addForm.resetFields()
-              editModal.open(null)
-            }}
-          >
-            新增用户
-          </Button>
-        </Space>
       </AppBreadcrumb>
 
       <Card 

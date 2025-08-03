@@ -115,7 +115,7 @@ const UserList: React.FC = () => {
               handleChangeStatus(record.id, 1)
             }}
           >
-            <Button variant="outlined" style={{ color: '#13A07B', borderColor: '#13A07B' }}>
+            <Button variant="outlined" style={{ color: '#13A07B', borderColor: '#13A07B' }} disabled={record.userStatus === 1}>
               审批
             </Button> 
           </DeleteConfirm>
@@ -125,7 +125,7 @@ const UserList: React.FC = () => {
               handleChangeStatus(record.id, 2)
             }}
           >
-            <Button variant="outlined" danger>
+            <Button variant="outlined" danger disabled={record.userStatus === 2}>
               失效
             </Button> 
           </DeleteConfirm>
@@ -142,11 +142,9 @@ const UserList: React.FC = () => {
         ...formData,
         userStatus: tabKey === 'ALL' ? undefined : tabKey === 'POINTS' ? 0 : undefined,
       })
-      console.log('获取用户列表数据', data)
-      const totalElements = data.total
       return {
         list: data.records,
-        total: totalElements,
+        total: data.total
       }
     } catch (error) {
       msg.$error(error)

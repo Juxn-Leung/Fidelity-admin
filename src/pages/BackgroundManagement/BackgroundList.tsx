@@ -25,15 +25,16 @@ import {
 import { useAntdEditModal } from '@/hooks/form'
 import dayjs from 'dayjs'
 import DeleteConfirm from '@/components/DeleteConfirm'
-import ConfigureSystemHardwareAPI from '@/apis/ConfigureSystemHardwareAPI'
+import PicAPI from '@/apis/PicAPI'
+import { formatPicUrl } from '@/utils/format'
 import { useStatusHelpers } from '@/enums/statusEnum'
-import JIM_w from '@/assets/images/JIM_w.jpg'
-import SILVER_w from '@/assets/images/SILVER_w.jpg'
-import WHITE_w from '@/assets/images/WHITE_w.jpg'
+import { useUserStatusHelpers } from '@/enums/userStatusEnum'
 
 const UserList: React.FC = () => {
   const { msg } = useMessage()
   const { toggleSpin } = useSpin()
+
+  const { getUserStatusText } = useUserStatusHelpers()
 
   const [addForm] = Form.useForm()
   const editModal = useAntdEditModal({
@@ -48,57 +49,103 @@ const UserList: React.FC = () => {
   const columns: TableColumnsType<any> = [
     {
       title: '图片',
-      dataIndex: 'image',
+      dataIndex: 'picId',
+      width: 150,
       render: (text: any) => (
         <img
-          src={text}
+          src={formatPicUrl(text)}
           style={{ width: 108, height: 192, objectFit: 'cover' }}
         />
       ),
     },
     {
       title: '图片名称',
-      dataIndex: 'name',
+      dataIndex: 'picName',
+      width: 200,
     },
     {
       title: '状态',
-      dataIndex: 'status',
+      dataIndex: 'picStatus',
+      width: 100,
+      render: (text) => (
+        <span
+          className={
+            text === 0
+              ? 'text-yellow-500'
+              : text === 1
+                ? 'text-green-500'
+                : 'text-red-500'
+          }
+        >
+          {getUserStatusText(text)}
+        </span>
+      ),
     },
     {
       title: '备注',
-      dataIndex: 'remark',
+      dataIndex: 'picRemark',
+      width: 200,
+      render: (text: any) => text || '-',
     },
     {
       title: '最后修改人',
-      dataIndex: 'modifiedBy',
+      dataIndex: 'updateUserName',
+      width: 160,
     },
     {
       title: '修改时间',
-      dataIndex: 'modifiedTime',
-      render: (text: any) => text && dayjs(text).format('YYYY-MM-DD HH:mm:ss'),
+      dataIndex: 'updateTime',
+      render: (_, record) =>
+        record.updateTime
+          ? dayjs(record.updateTime).format('YYYY-MM-DD HH:mm:ss')
+          : dayjs(record.createTime).format('YYYY-MM-DD HH:mm:ss'),
+      width: 220,
     },
     {
       title: '操作',
       key: 'operation',
       align: 'center',
       fixed: 'right',
-      width: 180,
+      width: 260,
       render: (_, record) => (
         <Space>
-          <Button color="primary" variant="outlined" onClick={() => {
-            editModal.open(record.id)
-          }}>
+          <Button
+            color="primary"
+            variant="outlined"
+            onClick={() => {
+              addForm.setFieldsValue({
+                picName: record.picName,
+                picRemark: record.picRemark,
+                picId: record.picId,
+              })
+              editModal.open(record.id)
+            }}
+          >
             修改
           </Button>
           <DeleteConfirm
-            title="确认失效该数据？"
+            title="确认生效该数据？"
             onConfirm={() => {
-              handleDelete([record.id])
+              handleChangeStatus(record.id, 1)
             }}
           >
-            <Button variant="outlined" danger>
+            <Button
+              variant="outlined"
+              disabled={record.picStatus === 1}
+              style={{ color: '#13A07B', borderColor: '#13A07B' }}
+            >
+              生效
+            </Button>
+          </DeleteConfirm>
+          <DeleteConfirm
+            title="确认失效该数据？"
+            onConfirm={() => {
+              handleChangeStatus(record.id, 2)
+            }}
+          >
+            <Button variant="outlined" danger disabled={record.picStatus === 2}>
               失效
-            </Button> 
+            </Button>
           </DeleteConfirm>
         </Space>
       ),
@@ -108,44 +155,13 @@ const UserList: React.FC = () => {
   const getTableData: GetTableDataFn = async (params, formData) => {
     try {
       const listQuery = getListQuery(params)
-      // const { content, totalElements } = await ConfigureSystemHardwareAPI.find({
-      //   ...listQuery,
-      //   ...formData,
-      // })
-      console.log('listQuery', listQuery, formData)
-      const content = [
-        {
-          id: '1',
-          name: '用户1',
-          image: JIM_w,
-          status: '启用',
-          remark: '这是一个备注',
-          modifiedBy: '管理员',
-          modifiedTime: new Date().toISOString(),
-        },
-        {
-          id: '2',
-          name: '用户2',
-          image: SILVER_w,
-          status: '禁用',
-          remark: '这是另一个备注',
-          modifiedBy: '管理员',
-          modifiedTime: new Date().toISOString(),
-        },
-        {
-          id: '3',
-          name: '用户3',
-          image: WHITE_w,
-          status: '启用',
-          remark: '这是一个备注',
-          modifiedBy: '管理员',
-          modifiedTime: new Date().toISOString(),
-        },
-      ]
-      const totalElements = content.length
+      const { data } = await PicAPI.find({
+        ...listQuery,
+        ...formData,
+      })
       return {
-        list: content,
-        total: totalElements,
+        list: data.records,
+        total: data.total,
       }
     } catch (error) {
       msg.$error(error)
@@ -164,23 +180,20 @@ const UserList: React.FC = () => {
   })
   const { reset, submit } = search
 
-  const { selectedRowKeys, rowSelection, noneSelected, clearAll } =
+  const { rowSelection, clearAll } =
     useAntdDataTableSelections(data?.list || [])
 
-  const [confirmLoading, setConfirmLoading] = useState(false);
+  const [confirmLoading, setConfirmLoading] = useState(false)
   const handleSubmit = async (data: any) => {
     setConfirmLoading(true)
     try {
       if (editModal.editId) {
-        await ConfigureSystemHardwareAPI.update(editModal.editId, {
+        await PicAPI.edit({
           ...data,
-          type: 'QUICK_SCAN',
+          id: editModal.editId,
         })
       } else {
-        await ConfigureSystemHardwareAPI.save({
-          ...data,
-          type: 'QUICK_SCAN',
-        })
+        await PicAPI.add(data)
       }
       msg.success('操作成功')
       refresh()
@@ -193,23 +206,13 @@ const UserList: React.FC = () => {
     }
   }
 
-  const handleBatchDelete = async () => {
+  const handleChangeStatus = async (id: string, picStatus: number) => {
     try {
       toggleSpin(true)
-      await ConfigureSystemHardwareAPI.batchDelete(selectedRowKeys)
-      refresh()
-      msg.success('操作成功')
-    } catch (error) {
-      msg.$error(error)
-    } finally {
-      toggleSpin(false)
-    }
-  }
-
-  const handleDelete = async (ids: string[]) => {
-    try {
-      toggleSpin(true)
-      await ConfigureSystemHardwareAPI.batchDelete(ids)
+      await PicAPI.picStatusAudit({
+        id,
+        picStatus,
+      })
       refresh()
       msg.success('操作成功')
     } catch (error) {
@@ -221,18 +224,8 @@ const UserList: React.FC = () => {
 
   return (
     <div className="page-content">
-      <AppBreadcrumb
-        breadcrumbList={[{ title: '背景图管理' }]}
-      >
+      <AppBreadcrumb breadcrumbList={[{ title: '背景图管理' }]}>
         <Space>
-          <DeleteConfirm 
-            onConfirm={handleBatchDelete}
-            title="确认失效选中的数据？"
-          >
-            <Button type="primary" disabled={noneSelected} danger>
-              失效
-            </Button>
-          </DeleteConfirm>
           <Button
             type="primary"
             onClick={() => {
@@ -245,9 +238,7 @@ const UserList: React.FC = () => {
         </Space>
       </AppBreadcrumb>
 
-      <Card 
-        className="page-card"
-      >
+      <Card className="page-card">
         <DataTableFilter form={form} onReset={reset} onSubmit={submit}>
           <DataTableFilterItem label="图片名称" name="name">
             <Input placeholder="请输入" allowClear={true} />
@@ -281,7 +272,6 @@ const UserList: React.FC = () => {
         }}
       >
         <UserForm
-          editId={editModal.editId}
           form={addForm}
           onFinish={handleSubmit}
         />
