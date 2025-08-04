@@ -1,13 +1,16 @@
 import React from 'react'
 import { withDetailProvider } from '@/contexts/DetailContext'
-// import UniversalReceivingDistributionAPI from '@/apis/UniversalReceivingDistributionAPI'
+import PatternAPI from '@/apis/PatternAPI'
 import Toolbar from './Toolbar.tsx'
 import Content from './Content.tsx'
 import { Flex } from 'antd'
 
 const fetchDetail = async (id?: string) => {
-  if (!id) return
-  // const allotInfo = await UniversalReceivingDistributionAPI.getById(id)
+  if (!id) return {
+    styleInfo: null,
+  }
+  const styleInfo = await PatternAPI.one(id)
+  console.log('styleInfo', styleInfo)
   return {
     // allotInfo,
     styleInfo: {

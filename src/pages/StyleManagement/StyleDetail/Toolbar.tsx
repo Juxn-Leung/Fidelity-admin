@@ -3,7 +3,7 @@ import { Breadcrumb, Button, Dropdown, Flex, MenuProps, Space } from 'antd'
 import { useDetail } from '@/contexts/DetailContext'
 import useMessage from '@/components/MessageContent/useMessage'
 import useSpin from '@/components/SpinContent/useSpin'
-// import UniversalReceivingDistributionAPI from '@/apis/UniversalReceivingDistributionAPI'
+import PatternAPI from '@/apis/PatternAPI'
 import { useMemo } from 'react'
 
 const Toolbar = () => {
@@ -14,26 +14,19 @@ const Toolbar = () => {
   const { msg } = useMessage()
   const { toggleSpin } = useSpin()
 
-  const handleCancel = async () => {
+  const handleSubmit= async () => {
     toggleSpin(true)
     try {
-      // await UniversalReceivingDistributionAPI.cancel(id)
-      msg.success('操作成功')
-      refresh()
-    } catch (error) {
-      msg.$error(error)
-    } finally {
-      toggleSpin(false)
-    }
-  }
+      if (styleInfo?.id) {
+        await PatternAPI.edit({
+          id: styleInfo.id,
+        })
+      } else {
+        await PatternAPI.add({
 
-  const accept = async (handled: boolean) => {
-    toggleSpin(true)
-    try {
-      // await UniversalReceivingDistributionAPI.accept({
-      //   ids: [id],
-      //   handled,
-      // })
+        })
+      }
+      
       msg.success('操作成功')
       refresh()
     } catch (error) {
@@ -59,7 +52,9 @@ const Toolbar = () => {
           ]}
         />
           <Space size={16}>
-            <Button type="primary">保存</Button>
+            <Button type="primary" onClick={
+              () => handleSubmit()
+            }>保存</Button>
             <Button color="primary" variant="outlined">返回</Button>
           </Space>
       </Flex>

@@ -48,6 +48,15 @@ class PatternAPI extends TempBaseEntityAPI {
     })
     return data
   }
+
+   async one(params: any) {
+    const { data } = await axiosInstance({
+      url: `${this.endpoint}/one`,
+      method: 'post',
+      data: params,
+    })
+    return data
+  }
 }
 
 export default new PatternAPI(
