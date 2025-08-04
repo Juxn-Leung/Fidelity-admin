@@ -23,7 +23,7 @@ import {
 } from '@/hooks/dataTable'
 import dayjs from 'dayjs'
 import DeleteConfirm from '@/components/DeleteConfirm'
-import ConfigureSystemHardwareAPI from '@/apis/ConfigureSystemHardwareAPI'
+import PatternAPI from '@/apis/PatternAPI'
 import { useStatusHelpers } from '@/enums/statusEnum'
 
 const UserList: React.FC = () => {
@@ -36,11 +36,11 @@ const UserList: React.FC = () => {
   const columns: TableColumnsType<any> = [
     {
       title: '款式名称',
-      dataIndex: 'name',
+      dataIndex: 'patternName',
     },
     {
       title: '状态',
-      dataIndex: 'status',
+      dataIndex: 'patternStatus',
     },
     {
       title: '最后修改人',
@@ -60,7 +60,7 @@ const UserList: React.FC = () => {
       render: (_, record) => (
         <Space>
           <Button color="primary" variant="outlined" onClick={() => {
-            navigate(`/style/${record?.id}`)
+            navigate(`/style/detail/${record?.id}`)
           }}>
             修改
           </Button>
@@ -72,7 +72,7 @@ const UserList: React.FC = () => {
           >
             <Button variant="outlined" danger>
               失效
-            </Button> 
+            </Button>
           </DeleteConfirm>
         </Space>
       ),
@@ -82,30 +82,13 @@ const UserList: React.FC = () => {
   const getTableData: GetTableDataFn = async (params, formData) => {
     try {
       const listQuery = getListQuery(params)
-      // const { content, totalElements } = await ConfigureSystemHardwareAPI.find({
-      //   ...listQuery,
-      //   ...formData,
-      // })
-      console.log('listQuery', listQuery, formData)
-      const content = [
-        {
-          id: '1',
-          name: '欢迎款式',          
-          status: '启用',
-          modifiedBy: '管理员',
-          modifiedTime: new Date().toISOString(),
-        },
-        {
-          id: '2',
-          name: '求婚款式',
-          status: '禁用',
-          modifiedBy: '管理员',
-          modifiedTime: new Date().toISOString(),
-        },
-      ]
-      const totalElements = content.length
+      const { data } = await PatternAPI.find({
+        ...listQuery,
+        ...formData,
+      })
+      const totalElements = data.total
       return {
-        list: content,
+        list: data.records,
         total: totalElements,
       }
     } catch (error) {
@@ -131,7 +114,7 @@ const UserList: React.FC = () => {
   const handleBatchDelete = async () => {
     try {
       toggleSpin(true)
-      await ConfigureSystemHardwareAPI.batchDelete(selectedRowKeys)
+      await PatternAPI.batchDelete(selectedRowKeys)
       refresh()
       msg.success('操作成功')
     } catch (error) {
@@ -144,7 +127,7 @@ const UserList: React.FC = () => {
   const handleDelete = async (ids: string[]) => {
     try {
       toggleSpin(true)
-      await ConfigureSystemHardwareAPI.batchDelete(ids)
+      await PatternAPI.batchDelete(ids)
       refresh()
       msg.success('操作成功')
     } catch (error) {
@@ -160,7 +143,7 @@ const UserList: React.FC = () => {
         breadcrumbList={[{ title: '背景图管理' }]}
       >
         <Space>
-          <DeleteConfirm 
+          <DeleteConfirm
             onConfirm={handleBatchDelete}
             title="确认失效选中的数据？"
           >
@@ -171,7 +154,7 @@ const UserList: React.FC = () => {
           <Button
             type="primary"
             onClick={() => {
-              
+              navigate(`/style/detail`)
             }}
           >
             新增款式
@@ -179,7 +162,7 @@ const UserList: React.FC = () => {
         </Space>
       </AppBreadcrumb>
 
-      <Card 
+      <Card
         className="page-card"
       >
         <DataTableFilter form={form} onReset={reset} onSubmit={submit}>
