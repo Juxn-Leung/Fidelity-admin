@@ -12,7 +12,7 @@ import {
 } from 'antd/lib/menu/interface'
 import { useAuth, RequiredAuthorities } from '@/contexts/AuthContext'
 import omit from 'lodash/omit'
-import { Permission } from '@/enums/permissionEnum'
+import { Permission } from '@/enums//permissionEnum'
 
 type MenuItem = Required<MenuProps>['items'][number]
 interface ExtendedMenuItemType extends MenuItemType {
@@ -40,11 +40,11 @@ const items: ExtendedItemType[] = [
     label: <Link to={'/background'}>背景图管理</Link>,
     icon: <PictureOutlined />,
   },
-  {
-    key: '/music',
-    label: <Link to={'/music'}>音乐管理</Link>,
-    icon: <PlayCircleOutlined />,
-  },
+  // {
+  //   key: '/music',
+  //   label: <Link to={'/music'}>音乐管理</Link>,
+  //   icon: <PlayCircleOutlined />,
+  // },
   {
     key: '/style',
     label: <Link to={'/style'}>款式管理</Link>,

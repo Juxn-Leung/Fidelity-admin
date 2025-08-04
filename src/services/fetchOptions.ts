@@ -1,16 +1,14 @@
 
-// import { SubmitStatus } from '@/enums/submitStatusEnum'
-// import { SendingType } from '@/enums/sendingTypeEnum'
+import PicAPI from '@/apis/PicAPI'
 
-
-// export const fetchAppealCourtRecordStatusOptions = async () => {
-//   const { content } = await AppealCourtAPI.AppealCourtList({
-//     unpaged: true,
-//   })
-//   return content.map((ele: any) => {
-//     return {
-//       ...ele,
-//       disabled: ele.status === 'C',
-//     }
-//   })
-// }
+export const fetchPicFindOptions = async () => {
+  const { data } = await PicAPI.find({
+    unpaged: true,
+  })
+  return data?.records?.map((ele: any) => {
+    return {
+      ...ele,
+      disabled: ele.status === 1,
+    }
+  })
+}

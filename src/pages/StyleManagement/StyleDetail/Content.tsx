@@ -1,4 +1,4 @@
-import { Button, Col, Form, Input, Radio, Row, Select, Space } from 'antd'
+import { Button, Col, Form, Input, Radio, Row, Space } from 'antd'
 import Marquee from 'react-fast-marquee'
 import ReactQuill from 'react-quill'
 import 'react-quill/dist/quill.snow.css'
@@ -8,11 +8,10 @@ import DetailCard from '@/components/DetailCard'
 import TextArea from 'antd/es/input/TextArea'
 import { MutedOutlined, WifiOutlined } from '@ant-design/icons'
 import dayjs from 'dayjs'
-import { useMemo, useRef, useState } from 'react'
+import { useMemo, useState } from 'react'
 import AsyncSelect from '@/components/AsyncSelect'
-import JIM_w from '@/assets/images/JIM_w.jpg'
-import SILVER_w from '@/assets/images/SILVER_w.jpg'
-import WHITE_w from '@/assets/images/WHITE_w.jpg'
+import { fetchPicFindOptions } from '@/services/fetchOptions'
+import { formatPicUrl } from '@/utils/format'
 
 
 const Content = () => {
@@ -21,9 +20,9 @@ const Content = () => {
   } = useDetail()
 
   const [form] = Form.useForm()
-  const background = Form.useWatch('background', form)
-  const mode = Form.useWatch('mode', form) || 'text'
-  const content = Form.useWatch('content', form) || ''
+  const backgroundId = Form.useWatch('backgroundId', form)
+  const patternMode = Form.useWatch('patternMode', form) || 'text'
+  const patternContent = Form.useWatch('patternContent', form) || ''
   const [message, setMessage] = useState<string>('')
 
   const handleContentChange = (value: string) => {
@@ -47,7 +46,7 @@ const Content = () => {
 
   const phoneStyle = useMemo(() => {
     return {
-      backgroundImage: `url(${background})`,
+      backgroundImage: `url(${formatPicUrl(backgroundId)})`,
       backgroundSize: 'cover',
       height: direction === 'vertical' ? '812px' : '400px',
       width: direction === 'vertical' ? '400px' : '812px',
@@ -56,7 +55,7 @@ const Content = () => {
       boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
       margin: '20px auto',
     }
-  }, [background, direction])
+  }, [backgroundId, direction])
 
   const phoneTitle = () => {
     return (
@@ -101,7 +100,7 @@ const Content = () => {
               <Row gutter={24}>
                 <Col span={24}>
                   <Form.Item
-                    name="name"
+                    name="patternName"
                     label="款式名称"
                     rules={[{ required: true }]}
                   >
@@ -114,7 +113,7 @@ const Content = () => {
                   </Form.Item>
                 </Col>
                 <Col span={24}>
-                  <Form.Item name="mode" label="模式">
+                  <Form.Item name="patternMode" label="模式">
                     <Radio.Group
                       options={[
                         { value: 'text', label: '文字展示' },
@@ -124,38 +123,20 @@ const Content = () => {
                   </Form.Item>
                 </Col>
                 <Col span={12}>
-                  <Form.Item name="background" label="背景图片">
-                    <Select
-                      options={[
-                        {
-                          label: '背景图1',
-                          value: JIM_w,
-                        },
-                        {
-                          label: '背景图2',
-                          value: SILVER_w,
-                        },
-                        {
-                          label: '背景图3',
-                          value: WHITE_w,
-                        },
-                      ]}
-                      className="w-full"
-                      placeholder="請選擇"
-                    />
-                    {/* <AsyncSelect
+                  <Form.Item name="backgroundId" label="背景图片">
+                    <AsyncSelect
                       placeholder="請選擇"
                       fieldNames={{
                         label: 'nameConfigure',
                         value: 'id',
                       }}
-                      fetchOptions={fetchMeetingConfigurationOptions}
-                    /> */}
+                      fetchOptions={fetchPicFindOptions}
+                    />
                   </Form.Item>
                 </Col>
                 <Col span={24}>
-                  <Form.Item name="content" label="款式内容">
-                    {mode === 'text' ? (
+                  <Form.Item name="patternContent" label="款式内容">
+                    {patternMode === 'text' ? (
                       <ReactQuill
                         theme="snow"
                         value={message}
@@ -209,7 +190,7 @@ const Content = () => {
             <div className="phone-preview relative" style={phoneStyle}>
               {phoneTitle()}
 
-              {mode === 'text' ? (
+              {patternMode === 'text' ? (
                 <div
                   dangerouslySetInnerHTML={{ __html: message }}
                   className="absolute"
@@ -235,7 +216,7 @@ const Content = () => {
                   <p style={{
                     fontSize: '36px',
                     color: '#333',
-                  }}>{content}</p>
+                  }}>{patternContent}</p>
                 </Marquee>
               )}
             </div>

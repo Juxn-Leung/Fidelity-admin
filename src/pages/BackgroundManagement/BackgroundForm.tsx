@@ -1,29 +1,27 @@
 import { Col, Form, Input, Row, Image, Space, Button } from 'antd'
 import type { FormProps, GetProp, UploadProps } from 'antd'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { useFileUpload } from '@/hooks/useFileUpload.ts'
 import useMessage from '@/components/MessageContent/useMessage'
 import useSpin from '@/components/SpinContent/useSpin'
-import ConfigureSystemHardwareAPI from '@/apis/ConfigureSystemHardwareAPI'
+import FileAPI from '@/apis/FileAPI'
 import TextArea from 'antd/es/input/TextArea'
 import { PlusOutlined } from '@ant-design/icons'
+import { formatPicUrl } from '@/utils/format'
 
 type FileType = Parameters<GetProp<UploadProps, 'beforeUpload'>>[0]
 
-const getBase64 = (file: FileType): Promise<string> =>
-  new Promise((resolve, reject) => {
-    const reader = new FileReader()
-    reader.readAsDataURL(file)
-    reader.onload = () => resolve(reader.result as string)
-    reader.onerror = (error) => reject(error)
-  })
+// const getBase64 = (file: FileType): Promise<string> =>
+//   new Promise((resolve, reject) => {
+//     const reader = new FileReader()
+//     reader.readAsDataURL(file)
+//     reader.onload = () => resolve(reader.result as string)
+//     reader.onerror = (error) => reject(error)
+//   })
 
 function BackgroundForm({
-  editId,
   ...formProps
-}: FormProps & {
-  editId: string | null
-}) {
+}: FormProps & {}) {
   const { msg } = useMessage()
   const { toggleSpin } = useSpin()
   const { openFileDialog } = useFileUpload()
@@ -31,17 +29,18 @@ function BackgroundForm({
   const [previewOpen, setPreviewOpen] = useState(false)
   const [previewImage, setPreviewImage] = useState('')
 
-  const image = Form.useWatch('image', formProps.form)
+  const picId = Form.useWatch('picId', formProps.form)
 
   const handlePreview = async () => {
-    setPreviewImage(image)
+
+    setPreviewImage(formatPicUrl(picId))
     setPreviewOpen(true)
   }
 
   const handleDelete = () => {
     if (formProps?.form) {
       formProps.form.setFieldsValue({
-        image: '',
+        picId: '',
       })
     }
     setPreviewImage('')
@@ -50,16 +49,20 @@ function BackgroundForm({
 
   const handleUpload = async () => {
     try {
-      toggleSpin(true)
       const file = await openFileDialog({
         accept: '.jpg,.jpeg,.png',
         maxSize: 10240, // 最大10MB
         multiple: false,
       })
-      const url = await getBase64(file as FileType)
+      console.log('上传的文件', file)
+      toggleSpin(true)
+      const formData = new FormData()
+      formData.append('file', file as FileType)
+      const {data} = await FileAPI.upload(formData as any)
+      console.log('上传结果', data)
       if (formProps?.form) {
         formProps.form.setFieldsValue({
-          image: url,
+          picId: data,
         })
       }
     } catch (error) {
@@ -70,47 +73,13 @@ function BackgroundForm({
     }
   }
 
-  const getInfo = async (id: string) => {
-    toggleSpin(true)
-    try {
-      // const data = await ConfigureSystemHardwareAPI.getById(id)
-      const data = {
-        id: '1',
-        name: '用户1',
-        image:
-          'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png',
-        status: '启用',
-        remark: '这是一个备注',
-        modifiedBy: '管理员',
-        modifiedTime: new Date().toISOString(),
-      }
-      if (formProps?.form) {
-        formProps.form.setFieldsValue({
-          name: data.name,
-          image: data.image,
-          remark: data.remark,
-        })
-      }
-    } catch (error) {
-      msg.$error(error)
-    } finally {
-      toggleSpin(false)
-    }
-  }
-
-  useEffect(() => {
-    if (editId) {
-      getInfo(editId)
-    }
-  }, [editId])
-
   return (
     <>
       <Form layout="vertical" {...formProps}>
         <Row gutter={24}>
           <Col span={24}>
             <Form.Item
-              name="name"
+              name="picName"
               label="图片名称"
               rules={[{ required: true }]}
             >
@@ -119,14 +88,14 @@ function BackgroundForm({
           </Col>
           <Col span={24}>
             <Form.Item
-              name="image"
+              name="picId"
               label="图片上传"
               rules={[{ required: true, message: '请上传图片' }]}
             >
-              {image ? (
+              {picId ? (
                 <Space size={16}>
                   <img 
-                    src={image} 
+                    src={formatPicUrl(picId)} 
                     style={{ width: 108, height: 192, objectFit: 'cover' }}
                   />
                   <Button type='primary' onClick={handlePreview}>预览</Button>
@@ -147,7 +116,7 @@ function BackgroundForm({
             </Form.Item>
           </Col>
           <Col span={24}>
-            <Form.Item name="remark" label="备注">
+            <Form.Item name="picRemark" label="备注">
               <TextArea
                 showCount
                 maxLength={100}
