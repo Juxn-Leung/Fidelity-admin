@@ -26,13 +26,20 @@ const fetchDetail = async (id?: string) => {
     }
   }
 }
-const AllotDetail: React.FC = withDetailProvider(
+const StyleDetail: React.FC = withDetailProvider(
   () => {
+    const formRef = React.createRef() as any
+    const onSubmit = () => {
+      if (formRef.current) {
+        formRef.current.handleSubmit()
+      }
+    }
+
     return (
       <Flex vertical style={{ height: 'calc(100vh - 60px)' }}>
-        <Toolbar></Toolbar>
+        <Toolbar onSubmit={onSubmit}></Toolbar>
         <div className="flex-1 overflow-hidden">
-          <Content />
+          <Content onRef={formRef} />
         </div>
       </Flex>
     )
@@ -41,4 +48,4 @@ const AllotDetail: React.FC = withDetailProvider(
   'id'
 )
 
-export default AllotDetail
+export default StyleDetail

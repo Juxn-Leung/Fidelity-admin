@@ -8,22 +8,38 @@ import DetailCard from '@/components/DetailCard'
 import TextArea from 'antd/es/input/TextArea'
 import { MutedOutlined, WifiOutlined } from '@ant-design/icons'
 import dayjs from 'dayjs'
-import { useMemo, useState } from 'react'
+import { useImperativeHandle, useMemo, useState } from 'react'
 import AsyncSelect from '@/components/AsyncSelect'
 import { fetchPicFindOptions } from '@/services/fetchOptions'
 import { formatPicUrl } from '@/utils/format'
+import useMessage from '@/components/MessageContent/useMessage'
+import useSpin from '@/components/SpinContent/useSpin'
+import PatternAPI from '@/apis/PatternAPI'
+
+interface FormProps {
+  onRef: any
+}
 
 
-const Content = () => {
+const Content: React.FC<FormProps> = (props) => {
   const {
     data: { styleInfo },
   } = useDetail()
-
+  const { onRef } = props
+  const { msg } = useMessage()
+  const { toggleSpin } = useSpin()
   const [form] = Form.useForm()
+  const patternName = Form.useWatch('patternName', form) || ''
   const backgroundId = Form.useWatch('backgroundId', form)
   const patternMode = Form.useWatch('patternMode', form) || 'text'
   const patternContent = Form.useWatch('patternContent', form) || ''
   const [message, setMessage] = useState<string>('')
+
+  useImperativeHandle(onRef, () => {
+    return {
+      handleSubmit: onSubmit,
+    }
+  })
 
   const handleContentChange = (value: string) => {
     console.log('Content changed:', value)
@@ -56,6 +72,39 @@ const Content = () => {
       margin: '20px auto',
     }
   }, [backgroundId, direction])
+
+  const onSubmit = async () => {
+    try {
+      await form.validateFields()
+    } catch (error) {
+      msg.error('请填写必填项')
+      return
+    }
+    toggleSpin(true)
+    try {
+      if (styleInfo?.id) {
+        await PatternAPI.edit({
+          patternName,
+          patternMode,
+          patternContent,
+          backgroundId,
+          id: styleInfo.id,
+        })
+      } else {
+        await PatternAPI.add({
+          patternName,
+          patternMode,
+          patternContent,
+          backgroundId,
+        })
+      }
+      msg.success('操作成功')
+    } catch (error) {
+      msg.$error(error)
+    } finally {
+      toggleSpin(false)
+    }
+  }
 
   const phoneTitle = () => {
     return (
@@ -127,7 +176,7 @@ const Content = () => {
                     <AsyncSelect
                       placeholder="請選擇"
                       fieldNames={{
-                        label: 'nameConfigure',
+                        label: 'picName',
                         value: 'id',
                       }}
                       fetchOptions={fetchPicFindOptions}

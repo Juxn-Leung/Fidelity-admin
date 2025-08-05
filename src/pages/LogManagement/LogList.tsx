@@ -95,16 +95,10 @@ const UserList: React.FC = () => {
         className="page-card"
       >
         <DataTableFilter form={form} onReset={reset} onSubmit={submit}>
-          <DataTableFilterItem label="开始日期" name="startDate">
+          <DataTableFilterItem label="日期范围" name="startDate">
             <RangePicker
               className="w-full"
               onKeyDown={(e) => deleteDate(e, 'startDate')}
-            />
-          </DataTableFilterItem>
-          <DataTableFilterItem label="结束日期" name="endDate">
-            <RangePicker
-              className="w-full"
-              onKeyDown={(e) => deleteDate(e, 'endDate')}
             />
           </DataTableFilterItem>
           <DataTableFilterItem label="状态" name="status">
