@@ -52,11 +52,11 @@ const UserList: React.FC = () => {
   const columns: TableColumnsType<any> = [
     {
       title: '款式名称',
-      dataIndex: 'name',
+      dataIndex: 'patternName',
     },
     {
       title: '状态',
-      dataIndex: 'status',
+      dataIndex: 'patternStatus',
     },
     {
       title: '最后修改人',
@@ -78,7 +78,7 @@ const UserList: React.FC = () => {
       render: (_, record) => (
         <Space>
           <Button color="primary" variant="outlined" onClick={() => {
-            navigate(`/style/${record?.id}`)
+            navigate(`/style/detail/${record?.id}`)
           }}>
             修改
           </Button>
@@ -100,7 +100,7 @@ const UserList: React.FC = () => {
           >
             <Button variant="outlined" danger>
               失效
-            </Button> 
+            </Button>
           </DeleteConfirm>
         </Space>
       ),
@@ -114,9 +114,10 @@ const UserList: React.FC = () => {
         ...listQuery,
         ...formData,
       })
+      const totalElements = data.total
       return {
         list: data.records,
-        total: data.total
+        total: totalElements,
       }
     } catch (error) {
       msg.$error(error)
@@ -147,7 +148,7 @@ const UserList: React.FC = () => {
           <Button
             type="primary"  
             onClick={() => {
-              navigate('/styles')
+              navigate(`/style/detail`)
             }}
           >
             新增款式
@@ -155,7 +156,7 @@ const UserList: React.FC = () => {
         </Space>
       </AppBreadcrumb>
 
-      <Card 
+      <Card
         className="page-card"
       >
         <DataTableFilter form={form} onReset={reset} onSubmit={submit}>

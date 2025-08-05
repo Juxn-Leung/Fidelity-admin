@@ -54,7 +54,7 @@ const router = createHashRouter([
             element: <StylePage />,
           },
           {
-            path: ':id',
+            path: 'detail/?:id',
             element: <StyleDetailPage />,
           },
         ],
