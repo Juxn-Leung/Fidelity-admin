@@ -8,7 +8,7 @@ import DetailCard from '@/components/DetailCard'
 import TextArea from 'antd/es/input/TextArea'
 import { MutedOutlined, WifiOutlined } from '@ant-design/icons'
 import dayjs from 'dayjs'
-import { useImperativeHandle, useMemo, useState } from 'react'
+import { useEffect, useImperativeHandle, useMemo, useState } from 'react'
 import AsyncSelect from '@/components/AsyncSelect'
 import { fetchPicFindOptions } from '@/services/fetchOptions'
 import { formatPicUrl } from '@/utils/format'
@@ -42,7 +42,7 @@ const Content: React.FC<FormProps> = (props) => {
   })
 
   const handleContentChange = (value: string) => {
-    console.log('Content changed:', value)
+    // console.log('Content changed:', value)
     setMessage(value)
   }
 
@@ -89,6 +89,7 @@ const Content: React.FC<FormProps> = (props) => {
           patternContent,
           backgroundId,
           id: styleInfo.id,
+          patternStatus: 1
         })
       } else {
         await PatternAPI.add({
@@ -96,6 +97,7 @@ const Content: React.FC<FormProps> = (props) => {
           patternMode,
           patternContent,
           backgroundId,
+          patternStatus: 1
         })
       }
       msg.success('操作成功')
@@ -130,6 +132,15 @@ const Content: React.FC<FormProps> = (props) => {
       </div>
     )
   }
+
+  useEffect(() => {
+    form.setFieldsValue({
+      patternName: styleInfo?.patternName || '',
+      patternMode: styleInfo?.patternMode || 'text',
+      backgroundId: styleInfo?.backgroundId || undefined,
+      patternContent: styleInfo?.patternContent || '',
+    })
+  }, [styleInfo])
 
   return (
     <PageLayout

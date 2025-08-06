@@ -9,21 +9,11 @@ const fetchDetail = async (id?: string) => {
   if (!id) return {
     styleInfo: null,
   }
-  const styleInfo = await PatternAPI.one(id)
-  console.log('styleInfo', styleInfo)
+  const {data} = await PatternAPI.one({
+    id
+  })
   return {
-    // allotInfo,
-    styleInfo: {
-      id: '123',
-      name: 'Sample Style',
-      status: 'active',
-      remark: 'This is a sample style remark.',
-      background: 'https://example.com/background.jpg',
-      music: '',
-      content: '',
-      modifiedBy: 'admin',
-      modifiedTime: '2023-10-01T12:00:00Z',
-    }
+    styleInfo: data
   }
 }
 const StyleDetail: React.FC = withDetailProvider(

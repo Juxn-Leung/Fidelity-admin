@@ -240,10 +240,10 @@ const UserList: React.FC = () => {
 
       <Card className="page-card">
         <DataTableFilter form={form} onReset={reset} onSubmit={submit}>
-          <DataTableFilterItem label="图片名称" name="name">
+          <DataTableFilterItem label="图片名称" name="picName">
             <Input placeholder="请输入" allowClear={true} />
           </DataTableFilterItem>
-          <DataTableFilterItem label="状态" name="status">
+          <DataTableFilterItem label="状态" name="picStatus">
             <Select
               options={statusEnumOptions}
               className="w-full"

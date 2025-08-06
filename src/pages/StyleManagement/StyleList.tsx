@@ -60,7 +60,7 @@ const UserList: React.FC = () => {
     },
     {
       title: '最后修改人',
-      dataIndex: 'userRole',
+      dataIndex: 'updateUserName',
       width: 160,
     },
     {
