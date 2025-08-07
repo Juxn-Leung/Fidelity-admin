@@ -19,18 +19,35 @@ import {
 } from '@/hooks/dataTable'
 import dayjs from 'dayjs'
 import LogAPI from '@/apis/LogAPI'
-import { useStatusHelpers } from '@/enums/statusEnum'
+import { useStatusCodeHelpers } from '@/enums/statusCodeEnum'
+
 const { RangePicker } = DatePicker
 
 const UserList: React.FC = () => {
   const { msg } = useMessage()
-  const { statusEnumOptions } = useStatusHelpers()
+  const { statusCodeEnumOptions, getStatusCodeText } = useStatusCodeHelpers()
 
   const columns: TableColumnsType<any> = [
     {
       title: '开始时间',
       dataIndex: 'createDate',
       render: (text: any) => text && dayjs(text).format('YYYY-MM-DD HH:mm:ss'),
+    },
+    {
+      title: '状态',
+      dataIndex: 'statusCode',
+      width: 100,
+      render: (text) => (
+        <span
+          className={
+              text === '成功'
+                ? 'text-green-500'
+                : 'text-red-500'
+          }
+        >
+          {getStatusCodeText(text)}
+        </span>
+      ),
     },
     {
       title: '操作节点',
@@ -47,11 +64,16 @@ const UserList: React.FC = () => {
   ]
 
   const getTableData: GetTableDataFn = async (params, formData) => {
+    const { date } = formData
+    const startTime = date && date[0] ? dayjs(date[0]).format('YYYY-MM-DD') : null
+    const endTime = date && date[1] ? dayjs(date[1]).format('YYYY-MM-DD') : null
     try {
       const listQuery = getListQuery(params)
       const { data } = await LogAPI.find({
         ...listQuery,
         ...formData,
+        startTime,
+        endTime,
       })
       return {
         list: data.records,
@@ -95,15 +117,17 @@ const UserList: React.FC = () => {
         className="page-card"
       >
         <DataTableFilter form={form} onReset={reset} onSubmit={submit}>
-          <DataTableFilterItem label="日期范围" name="startDate">
+          <DataTableFilterItem colProps={{ 
+            sm: 12, md: 12, lg: 10, xl: 8
+           }} label="日期范围" name="date">
             <RangePicker
               className="w-full"
-              onKeyDown={(e) => deleteDate(e, 'startDate')}
+              onKeyDown={(e) => deleteDate(e, 'date')}
             />
           </DataTableFilterItem>
-          <DataTableFilterItem label="状态" name="status">
+          <DataTableFilterItem label="状态" name="statusCode">
             <Select
-              options={statusEnumOptions}
+              options={statusCodeEnumOptions}
               className="w-full"
               placeholder="请选择"
               allowClear={true}

@@ -31,14 +31,14 @@ const UserList: React.FC = () => {
   const { toggleSpin } = useSpin()
   const navigate = useNavigate()
 
-  const { statusEnumOptions } = useStatusHelpers()
+  const { statusEnumOptions, getStatusText } = useStatusHelpers()
 
-  const handleChangeStatus = async (id: string, userStatus: number) => {
+  const handleChangeStatus = async (id: string, patternStatus: number) => {
     try {
       toggleSpin(true)
-      await PatternAPI.picStatusAudit({
+      await PatternAPI.patternAudit({
         id,
-        userStatus,
+        patternStatus,
       })
       refresh()
       msg.success('操作成功')
@@ -57,6 +57,20 @@ const UserList: React.FC = () => {
     {
       title: '状态',
       dataIndex: 'patternStatus',
+      width: 100,
+      render: (text) => (
+        <span
+          className={
+            text === 0
+              ? 'text-yellow-500'
+              : text === 1
+                ? 'text-green-500'
+                : 'text-red-500'
+          }
+        >
+          {getStatusText(text)}
+        </span>
+      ),
     },
     {
       title: '最后修改人',
@@ -88,7 +102,11 @@ const UserList: React.FC = () => {
               handleChangeStatus(record.id, 1)
             }}
           >
-            <Button variant="outlined" style={{ color: '#13A07B', borderColor: '#13A07B' }}>
+            <Button 
+              variant="outlined" 
+              disabled={record.patternStatus === 1}
+              style={{ color: '#13A07B', borderColor: '#13A07B' }}
+            >
               生效
             </Button> 
           </DeleteConfirm>
@@ -98,7 +116,7 @@ const UserList: React.FC = () => {
               handleChangeStatus(record.id, 2)
             }}
           >
-            <Button variant="outlined" danger>
+            <Button variant="outlined" danger disabled={record.patternStatus === 2}>
               失效
             </Button>
           </DeleteConfirm>

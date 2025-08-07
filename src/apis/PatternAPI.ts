@@ -40,9 +40,9 @@ class PatternAPI extends TempBaseEntityAPI {
     return data
   }
 
-  async picStatusAudit(params: any) {
+  async patternAudit(params: any) {
     const { data } = await axiosInstance({
-      url: `${this.endpoint}/picStatusAudit`,
+      url: `${this.endpoint}/patternAudit`,
       method: 'post',
       data: params,
     })

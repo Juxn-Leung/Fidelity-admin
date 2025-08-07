@@ -28,13 +28,10 @@ import DeleteConfirm from '@/components/DeleteConfirm'
 import PicAPI from '@/apis/PicAPI'
 import { formatPicUrl } from '@/utils/format'
 import { useStatusHelpers } from '@/enums/statusEnum'
-import { useUserStatusHelpers } from '@/enums/userStatusEnum'
 
 const UserList: React.FC = () => {
   const { msg } = useMessage()
   const { toggleSpin } = useSpin()
-
-  const { getUserStatusText } = useUserStatusHelpers()
 
   const [addForm] = Form.useForm()
   const editModal = useAntdEditModal({
@@ -44,7 +41,7 @@ const UserList: React.FC = () => {
     },
   })
 
-  const { statusEnumOptions } = useStatusHelpers()
+  const { statusEnumOptions, getStatusText } = useStatusHelpers()
 
   const columns: TableColumnsType<any> = [
     {
@@ -77,7 +74,7 @@ const UserList: React.FC = () => {
                 : 'text-red-500'
           }
         >
-          {getUserStatusText(text)}
+          {getStatusText(text)}
         </span>
       ),
     },
