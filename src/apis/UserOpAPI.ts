@@ -24,7 +24,7 @@ class UserOpAPI extends TempBaseEntityAPI {
 
   async createUser(params: any) {
     const { data } = await axiosInstance({
-      url: `${this.endpoint}/createUser`,
+      url: `${this.endpoint}/wxRegister`,
       method: 'post',
       data: params,
     })
