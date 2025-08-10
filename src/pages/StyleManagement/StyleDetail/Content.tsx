@@ -63,7 +63,7 @@ const Content: React.FC<FormProps> = (props) => {
   const phoneStyle = useMemo(() => {
     return {
       backgroundImage: `url(${formatPicUrl(backgroundId)})`,
-      backgroundSize: 'cover',
+      backgroundSize: '100% 100%;',
       height: direction === 'vertical' ? '812px' : '400px',
       width: direction === 'vertical' ? '400px' : '812px',
       borderRadius: '30px',
@@ -188,7 +188,7 @@ const Content: React.FC<FormProps> = (props) => {
                       placeholder="請選擇"
                       fieldNames={{
                         label: 'picName',
-                        value: 'id',
+                        value: 'picId',
                       }}
                       fetchOptions={fetchPicFindOptions}
                     />
