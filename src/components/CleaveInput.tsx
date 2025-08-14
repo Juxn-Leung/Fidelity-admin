@@ -1,4 +1,5 @@
-import Cleave from 'cleave.js/react'
+// @ts-ignore
+const Cleave = require('cleave.js/react').default as React.ComponentType<any>;
 import type { Props as CleaveProps } from 'cleave.js/react/props'
 import { forwardRef, useImperativeHandle, useRef } from 'react'
 

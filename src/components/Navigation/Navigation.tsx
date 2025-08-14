@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react'
-import { HomeOutlined, TeamOutlined, PictureOutlined, PlayCircleOutlined, CodeOutlined, FundOutlined } from '@ant-design/icons'
+import { HomeOutlined, TeamOutlined, PictureOutlined, CodeOutlined, FundOutlined } from '@ant-design/icons'
 import type { MenuProps } from 'antd'
 import { Menu } from 'antd'
 import { useLocation, Link } from 'react-router-dom'

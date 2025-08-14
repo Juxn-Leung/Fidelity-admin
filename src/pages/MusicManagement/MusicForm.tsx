@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 import { useFileUpload } from '@/hooks/useFileUpload.ts'
 import useMessage from '@/components/MessageContent/useMessage'
 import useSpin from '@/components/SpinContent/useSpin'
-import ConfigureSystemHardwareAPI from '@/apis/ConfigureSystemHardwareAPI'
+// import ConfigureSystemHardwareAPI from '@/apis/ConfigureSystemHardwareAPI'
 import TextArea from 'antd/es/input/TextArea'
 import { PlusOutlined } from '@ant-design/icons'
 
@@ -71,6 +71,7 @@ function BackgroundForm({
   }
 
   const getInfo = async (id: string) => {
+    console.log('Fetching data for ID:', id)
     toggleSpin(true)
     try {
       // const data = await ConfigureSystemHardwareAPI.getById(id)

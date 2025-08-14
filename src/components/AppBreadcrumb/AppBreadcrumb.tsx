@@ -22,7 +22,10 @@ const AppBreadcrumb: React.FC<BreadcrumbProps> = (props) => {
           //
           />
         }
-        items={breadcrumbList}
+        items={breadcrumbList.map(item => ({
+          title: item.title,
+          href: item.path,
+        }))}
         //
       />
       <div className="button__content">{children}</div>
