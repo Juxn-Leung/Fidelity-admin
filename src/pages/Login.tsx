@@ -1,6 +1,6 @@
 import useMessage from '@/components/MessageContent/useMessage'
 import useSpin from '@/components/SpinContent/useSpin'
-import { Image, Button, Divider, Form, Input, Typography } from 'antd'
+import {  Button, Divider, Form, Input, Typography } from 'antd'
 import { useNavigate } from 'react-router'
 import LoginAPI from '@/apis/LoginAPI'
 import ring from '@/assets/images/ring.png'
