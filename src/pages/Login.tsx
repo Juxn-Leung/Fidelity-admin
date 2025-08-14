@@ -3,6 +3,7 @@ import useSpin from '@/components/SpinContent/useSpin'
 import { Image, Button, Divider, Form, Input, Typography } from 'antd'
 import { useNavigate } from 'react-router'
 import LoginAPI from '@/apis/LoginAPI'
+import ring from '@/assets/images/ring.png'
 
 const PhoneVerification = () => {
   const navigate = useNavigate()
@@ -43,7 +44,7 @@ const PhoneVerification = () => {
           margin: '200px auto',
         }}
       >
-        <Image src="@/assets/images/ring.png" alt="logo" style={{ width: 228, height: 365 }} />
+        <img src={ring} alt="logo" style={{ width: 228, height: 365, margin: 'auto', marginBottom: '-80px' }} />
         <Typography.Title style={{ textAlign: 'center' }} level={2}>
           欢迎登录管理系统
         </Typography.Title>

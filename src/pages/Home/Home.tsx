@@ -1,7 +1,20 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Card } from 'antd'
+import UserOpAPI from '@/apis/UserOpAPI'
 
 const Home: React.FC = () => {
+  const refresh = async () => {
+    try {
+      await UserOpAPI.find({})
+    } catch (error) {
+      return
+    }
+  }
+
+  useEffect(() => {
+    refresh()
+  }, [])
+
   return (
     <div className="page-content">
       <Card
