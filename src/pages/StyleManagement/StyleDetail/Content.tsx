@@ -15,6 +15,7 @@ import { formatPicUrl } from '@/utils/format'
 import useMessage from '@/components/MessageContent/useMessage'
 import useSpin from '@/components/SpinContent/useSpin'
 import PatternAPI from '@/apis/PatternAPI'
+import '@/styles/font.css'
 
 interface FormProps {
   onRef: any
@@ -261,6 +262,7 @@ const Content: React.FC<FormProps> = (props) => {
                     top: '15%',
                     left: '0',
                     wordWrap: 'break-word',
+                    fontFamily: 'PingFangJiangNanTi',
                   }}
                 ></div>
               ) : (
@@ -276,6 +278,7 @@ const Content: React.FC<FormProps> = (props) => {
                   <p style={{
                     fontSize: '36px',
                     color: '#333',
+                    fontFamily: 'PingFangJiangNanTi',
                   }}>{patternContent}</p>
                 </Marquee>
               )}
