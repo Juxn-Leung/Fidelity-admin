@@ -64,7 +64,7 @@ const Content: React.FC<FormProps> = (props) => {
   const phoneStyle = useMemo(() => {
     return {
       backgroundImage: `url(${formatPicUrl(backgroundId)})`,
-      backgroundSize: '100% 100%;',
+      backgroundSize: 'cover',
       height: direction === 'vertical' ? '812px' : '400px',
       width: direction === 'vertical' ? '400px' : '812px',
       borderRadius: '30px',
@@ -141,6 +141,7 @@ const Content: React.FC<FormProps> = (props) => {
       backgroundId: styleInfo?.backgroundId || undefined,
       patternContent: styleInfo?.patternContent || '',
     })
+    setMessage(styleInfo?.patternContent || '')
   }, [styleInfo])
 
   return (
