@@ -258,9 +258,10 @@ const Content: React.FC<FormProps> = (props) => {
                   className="absolute"
                   style={{
                     padding: '16px',
-                    height: '70%',
+                    height: 'auto',
                     width: '100%',
-                    top: '15%',
+                    top: '50%',
+                    transform: 'translateY(-50%)',
                     left: '0',
                     wordWrap: 'break-word',
                     fontFamily: 'PingFangJiangNanTi',
